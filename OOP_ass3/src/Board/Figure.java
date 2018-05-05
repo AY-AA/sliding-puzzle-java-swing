@@ -81,7 +81,7 @@ public class Figure extends JButton implements ActionListener
 	}
 	/**
 	 * gets the status of the figure
-	 * @return true if in soultion position
+	 * @return true if in solution position
 	 */
 	public boolean getStatus()
 	{
