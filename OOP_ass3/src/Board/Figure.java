@@ -1,13 +1,8 @@
 package Board;
 import javax.swing.*;
-
 import Game.Puzzle;
-
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.event.ActionEvent;
-import java.awt.*;
 
 public class Figure extends JButton implements ActionListener
 {
@@ -130,6 +125,11 @@ public class Figure extends JButton implements ActionListener
 		return Y_POSITION;
 	}
 
+	public int getCellNumber()
+	{
+		return CELL_NUMBER;
+	}
+	
 	// -------------------------- SETTERS -------------------------- //
 
 	/**
