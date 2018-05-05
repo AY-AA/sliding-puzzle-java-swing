@@ -1,5 +1,7 @@
 package Board;
 
-public class Cell {
-
+public class Cell 
+{
+	public Cell()
+	{}
 }

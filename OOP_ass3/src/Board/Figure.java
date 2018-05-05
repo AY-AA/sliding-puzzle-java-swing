@@ -1,5 +1,7 @@
 package Board;
 
-public class Figure {
-
+public class Figure 
+{
+	public Figure() {}
+	
 }
