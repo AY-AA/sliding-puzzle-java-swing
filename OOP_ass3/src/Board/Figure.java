@@ -80,8 +80,8 @@ public class Figure extends JButton implements ActionListener
 		IS_IN_SOLUTION = xPosition && yPosition;
 	}
 	/**
-	 * 
-	 * @return
+	 * gets the status of the figure
+	 * @return true if in soultion position
 	 */
 	public boolean getStatus()
 	{
