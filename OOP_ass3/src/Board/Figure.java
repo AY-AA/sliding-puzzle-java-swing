@@ -6,24 +6,24 @@ import java.awt.event.ActionEvent;
 
 public class Figure extends JButton implements ActionListener
 {
-	private final int DIMENSION;
-	private final int SOLUTION_X_POSITION;
-	private final int SOLUTION_Y_POSITION;
+	private final int _dimension;
+	private final int _xSolution;
+	private final int _ySolution;
 	
-	private int X_POSITION;
-	private int Y_POSITION;
+	private int _xPosition;
+	private int _yPosition;
 	
-	private final int CELL_NUMBER;
-	private boolean IS_IN_SOLUTION;
+	private final int _cellNumber;
+	private boolean _inSolution;
 	
 	public Figure(int solX, int xolY, int x, int y,int dim, int cell, ImageIcon figure) 
 	{
-		SOLUTION_X_POSITION=solX;
-		SOLUTION_Y_POSITION=xolY;
-		X_POSITION = x;
-		Y_POSITION = y;
-		DIMENSION = dim;
-		CELL_NUMBER = cell;
+		_xSolution=solX;
+		_ySolution=xolY;
+		_xPosition = x;
+		_yPosition = y;
+		_dimension = dim;
+		_cellNumber = cell;
 		
 		checkPosition();
 		
@@ -41,22 +41,22 @@ public class Figure extends JButton implements ActionListener
 	 */
 	private void move()
 	{
-		Figure tFigure = Puzzle.currentEmpty;
+		Figure tFigure = Puzzle.EMPTY_FIGURE;
 		int tCellY = tFigure.getY();
 		int tCellX = tFigure.getX();
-		if (legalRow(Y_POSITION+1) && Y_POSITION == tCellY)				//check if up is empty
+		if (legalRow(_yPosition+1) && _yPosition == tCellY)				//check if up is empty
 		{
 			switchFigures(tFigure);
 		}
-		else if (legalRow(Y_POSITION-1) && Y_POSITION == tCellY)		//check if down is empty
+		else if (legalRow(_yPosition-1) && _yPosition == tCellY)		//check if down is empty
 		{
 			switchFigures(tFigure);
 		}
-		else if (legalColumn(X_POSITION-1) && Y_POSITION == tCellX)		//check if left is empty
+		else if (legalColumn(_xPosition-1) && _yPosition == tCellX)		//check if left is empty
 		{
 			switchFigures(tFigure);
 		}
-		else if (legalColumn(X_POSITION+1) && Y_POSITION == tCellX)		//check if right is empty
+		else if (legalColumn(_xPosition+1) && _yPosition == tCellX)		//check if right is empty
 		{
 			switchFigures(tFigure);
 		}
@@ -69,10 +69,10 @@ public class Figure extends JButton implements ActionListener
 	{
 		int tX = tFigure.getX();
 		int tY = tFigure.getY();
-		tFigure.setX(X_POSITION);
-		tFigure.setY(Y_POSITION);
-		X_POSITION = tX;
-		Y_POSITION = tY;		
+		tFigure.setX(_xPosition);
+		tFigure.setY(_yPosition);
+		_xPosition = tX;
+		_yPosition = tY;		
 	}
 	/**
 	 * checks if figure can be moved to the next or previous row by user's selection
@@ -81,7 +81,7 @@ public class Figure extends JButton implements ActionListener
 	 */
 	private boolean legalRow(int y)
 	{
-		return y+Y_POSITION < DIMENSION && y+Y_POSITION >= DIMENSION;
+		return y+_yPosition < _dimension && y+_yPosition >= _dimension;
 	}
 	/**
 	 * checks if figure can be moved to the next or previous column by user's selection
@@ -90,17 +90,17 @@ public class Figure extends JButton implements ActionListener
 	 */
 	private boolean legalColumn(int x)
 	{
-		return x+X_POSITION < DIMENSION && x+X_POSITION >= DIMENSION;
+		return x+_xPosition < _dimension && x+_xPosition >= _dimension;
 	}
 	/**
 	 * checks if figure is in its solution's cell
 	 */
 	private void checkPosition()
 	{
-		boolean xPosition = SOLUTION_X_POSITION == X_POSITION;
-		boolean yPosition = SOLUTION_Y_POSITION == Y_POSITION;
+		boolean xPosition = _xSolution == _xPosition;
+		boolean yPosition = _ySolution == _yPosition;
 
-		IS_IN_SOLUTION = xPosition && yPosition;
+		_inSolution = xPosition && yPosition;
 	}
 
 	
@@ -112,22 +112,22 @@ public class Figure extends JButton implements ActionListener
 	 */
 	public boolean getStatus()
 	{
-		return IS_IN_SOLUTION;
+		return _inSolution;
 	}
 	@Override
 	public int getX()
 	{
-		return X_POSITION;
+		return _xPosition;
 	}
 	@Override
 	public int getY()
 	{
-		return Y_POSITION;
+		return _yPosition;
 	}
 
 	public int getCellNumber()
 	{
-		return CELL_NUMBER;
+		return _cellNumber;
 	}
 	
 	// -------------------------- SETTERS -------------------------- //
@@ -137,13 +137,13 @@ public class Figure extends JButton implements ActionListener
 	 */
 	public void setX(int x)
 	{
-		X_POSITION = x;
+		_xPosition = x;
 	}	
 	/**
 	 * sets the y position of the figure
 	 */
 	public void setY(int y)
 	{
-		Y_POSITION = y;
+		_yPosition = y;
 	}
 }
