@@ -73,6 +73,7 @@ public class Figure extends JButton implements ActionListener
 		tFigure.setY(_yPosition);
 		_xPosition = tX;
 		_yPosition = tY;		
+		Puzzle.updateBoard();
 	}
 	/**
 	 * checks if figure can be moved to the next or previous row by user's selection
