@@ -8,9 +8,9 @@ public class StartPuzzle
 	{
 
 		
-        Puzzle puzzle = new Puzzle(3);
+       // Puzzle puzzle = new Puzzle(3);
         
-        puzzle.setVisible(true);
+       // puzzle.setVisible(true);
 	}
 
 }
