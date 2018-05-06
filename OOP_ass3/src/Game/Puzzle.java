@@ -43,6 +43,9 @@ public class Puzzle implements ActionListener, KeyListener
 	{
 		_board = new Board(dimension);
 		_puzzle = new JFrame("Sliding Puzzle");
+		
+		
+		
 		_puzzle.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		_container = new Container();
 		addComponents();
