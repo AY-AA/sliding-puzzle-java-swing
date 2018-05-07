@@ -31,32 +31,36 @@ public class MainWindow extends JFrame implements ActionListener {
 	
 	public MainWindow() 
 	{
+
 		super("Welcome");
+		setVisible(true);
+
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setSize(300,300);
 		setLocationRelativeTo(null);
 		setResizable(false);
-		menue = new JPanel();
-		menue.setLayout(new FlowLayout(FlowLayout.CENTER));
-		
-		//===== Buttons =====
-		exit = new JButton("Exit");
-		exit.addActionListener(this);
-		
-		start_Game = new JButton("Start to play");
-		start_Game.addActionListener(this);
-		
-		//===== Background =====
-		puzzleBackground = new ImageIcon("Background.jpg");
+		setLayout(new BorderLayout());
+//		menue = new JPanel();
+//		menue.setLayout(new FlowLayout(FlowLayout.CENTER));
+//		
+//		//===== Buttons =====
+//		exit = new JButton("Exit");
+//		exit.addActionListener(this);
+//		
+//		start_Game = new JButton("Start to play");
+//		start_Game.addActionListener(this);
+//		
+//		//===== Background =====
+		puzzleBackground = new ImageIcon("BackGround.jpg");
 		back_Label = new JLabel(puzzleBackground);
-		
-		menue.add(start_Game);
-		menue.add(exit);
-		menue.add(back_Label);	
-		
-		add(menue);
-		//pack();
-		setVisible(true);
+//		
+//		menue.add(start_Game);
+//		menue.add(exit);
+//		menue.add(back_Label);	
+//		
+//		add(menue);
+//		//pack();
+		add(back_Label);
 	}
 
 

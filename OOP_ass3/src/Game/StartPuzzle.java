@@ -22,9 +22,24 @@ import javax.swing.JFrame;
 
 public class StartPuzzle extends JFrame
 {
-	public static void startPuzzle()
-	{	
-      
+	public StartPuzzle()
+	{
+		setTitle("Background Color for JFrame");
+		setSize(400,400);
+		setLocationRelativeTo(null);
+		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		setVisible(true);
+		
+		
+		setLayout(new BorderLayout());
+		JLabel background=new JLabel(new ImageIcon("C://"));
+		add(background);
+		background.setLayout(new FlowLayout());
+	
+	
+	}
+	public static void main(String[] args) {
+		StartPuzzle sp = new StartPuzzle();
 	}
 
 }
