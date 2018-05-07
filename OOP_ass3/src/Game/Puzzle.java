@@ -68,7 +68,7 @@ public class Puzzle implements ActionListener, KeyListener
 		_pauseStartButton.setName("pause");
 		_pauseStartButton.addActionListener(l);
 		
-		_undo = new JButton();
+		JButton _undo = new JButton();
 		_undo.setName("undo");
 		
 		_changeImage = new JButton();
