@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -26,12 +27,17 @@ public class MainWindow extends JFrame implements ActionListener {
 	private JButton start_Game;
 	private ImageIcon puzzleBackground;
 	private JLabel back_Label;
+	private JPanel menue;
 	
 	public MainWindow() 
 	{
 		super("Welcome");
-		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		JPanel menue = new JPanel();
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		setSize(300,300);
+		setLocationRelativeTo(null);
+		setResizable(false);
+		menue = new JPanel();
+		menue.setLayout(new FlowLayout(FlowLayout.CENTER));
 		
 		//===== Buttons =====
 		exit = new JButton("Exit");
@@ -44,15 +50,13 @@ public class MainWindow extends JFrame implements ActionListener {
 		puzzleBackground = new ImageIcon("Background.jpg");
 		back_Label = new JLabel(puzzleBackground);
 		
-		//===== JFrame preferences =====
-		menue.add(exit,FlowLayout.LEFT);
-		menue.add(start_Game,FlowLayout.LEFT);
-		menue.add(back_Label);
-		this.setSize(300,300);
-		this.add(menue,BorderLayout.SOUTH);
-		back_Label.setVisible(true);
-		this.setVisible(true);
-		pack();
+		menue.add(start_Game);
+		menue.add(exit);
+		menue.add(back_Label);	
+		
+		add(menue);
+		//pack();
+		setVisible(true);
 	}
 
 
