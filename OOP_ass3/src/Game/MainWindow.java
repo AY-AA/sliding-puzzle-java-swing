@@ -51,7 +51,7 @@ public class MainWindow extends JFrame implements ActionListener {
 //		start_Game.addActionListener(this);
 //		
 //		//===== Background =====
-		puzzleBackground = new ImageIcon("BackGround.jpg");
+		puzzleBackground = new ImageIcon("MyBackground.jpg");
 		back_Label = new JLabel(puzzleBackground);
 //		
 //		menue.add(start_Game);
