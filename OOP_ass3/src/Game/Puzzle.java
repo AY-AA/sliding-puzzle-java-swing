@@ -1,4 +1,4 @@
-package Game;
+/*package Game;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
@@ -179,4 +179,4 @@ public class Puzzle implements ActionListener, KeyListener
 	 */
 
 
-}
+//}
