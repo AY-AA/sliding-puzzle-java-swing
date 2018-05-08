@@ -6,7 +6,10 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import Board.*;
 import java.awt.image.BufferedImage;
+import java.util.Stack;
+
 import javax.swing.*;
+
 
 
 public class Puzzle extends JFrame implements ActionListener, KeyListener
@@ -49,7 +52,7 @@ public class Puzzle extends JFrame implements ActionListener, KeyListener
 		super("Sliding Puzzle");
 		_board = board;
 		_boardsStack = new Stack();
-		
+		_boardsStack.push(_board);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		addComponents();
@@ -180,7 +183,7 @@ public class Puzzle extends JFrame implements ActionListener, KeyListener
 
 	private void undo()
 	{
-		_board = _boardsStack.dequeue();
+		_board = (JPanel) _boardsStack.pop();
 		updateBoard();
 	}
 
@@ -213,10 +216,25 @@ public class Puzzle extends JFrame implements ActionListener, KeyListener
 	}
 
 	@Override
-	public void keyPressed(KeyEvent arg0) {
-		// TODO Auto-generated method stub
-
-	}
+	public void keyPressed(KeyEvent e) 
+	{
+	    int keyCode = e.getKeyCode();
+	    switch( keyCode ) 
+	    { 
+	        case KeyEvent.VK_UP:
+	            ((Board)_board).moveByKey("up");
+	            break;
+	        case KeyEvent.VK_DOWN:
+	        	((Board)_board).moveByKey("down");
+	            break;
+	        case KeyEvent.VK_LEFT:
+	        	((Board)_board).moveByKey("left");
+	            break;
+	        case KeyEvent.VK_RIGHT :
+	        	((Board)_board).moveByKey("right");
+	            break;
+	     }
+	} 
 	@Override
 	public void keyReleased(KeyEvent arg0) {
 		// TODO Auto-generated method stub
@@ -231,8 +249,7 @@ public class Puzzle extends JFrame implements ActionListener, KeyListener
 	public void updateBoard() 
 	{
 		_movesCounter++;
-		
-		_boardsStack.enqueue(_board);
+		_boardsStack.push(_board);
 		
 	}
 	
