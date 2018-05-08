@@ -46,11 +46,11 @@ public class MainWindow extends JFrame implements ActionListener {
 		
 		//===== Buttons =====
 		exit = new JButton("Exit");
-		back_Label.add(exit,BorderLayout.AFTER_LAST_LINE);
+		back_Label.add(exit,BorderLayout.CENTER);
 		exit.addActionListener(this);
 		
 		start_Game = new JButton("Start to play");
-		back_Label.add(start_Game,BorderLayout.BEFORE_FIRST_LINE);
+		back_Label.add(start_Game,BorderLayout.EAST);
 		start_Game.addActionListener(this);
 		
 		add(back_Label);
