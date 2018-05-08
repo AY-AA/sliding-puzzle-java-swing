@@ -6,6 +6,8 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
@@ -27,40 +29,33 @@ public class MainWindow extends JFrame implements ActionListener {
 	private JButton start_Game;
 	private ImageIcon puzzleBackground;
 	private JLabel back_Label;
-	private JPanel menue;
+	private GridBagConstraints grid = new GridBagConstraints();
 	
 	public MainWindow() 
 	{
-
 		super("Welcome");
-		setVisible(true);
-
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setSize(300,300);
+		setSize(450,300);
 		setLocationRelativeTo(null);
 		setResizable(false);
-		setLayout(new BorderLayout());
-//		menue = new JPanel();
-//		menue.setLayout(new FlowLayout(FlowLayout.CENTER));
-//		
-//		//===== Buttons =====
-//		exit = new JButton("Exit");
-//		exit.addActionListener(this);
-//		
-//		start_Game = new JButton("Start to play");
-//		start_Game.addActionListener(this);
-//		
-//		//===== Background =====
+		
+		//===== Background =====
 		puzzleBackground = new ImageIcon("MyBackground.jpg");
 		back_Label = new JLabel(puzzleBackground);
-//		
-//		menue.add(start_Game);
-//		menue.add(exit);
-//		menue.add(back_Label);	
-//		
-//		add(menue);
-//		//pack();
+		back_Label.setLayout(new BorderLayout());
+		
+		//===== Buttons =====
+		exit = new JButton("Exit");
+		back_Label.add(exit,BorderLayout.AFTER_LAST_LINE);
+		exit.addActionListener(this);
+		
+		start_Game = new JButton("Start to play");
+		back_Label.add(start_Game,BorderLayout.BEFORE_FIRST_LINE);
+		start_Game.addActionListener(this);
+		
 		add(back_Label);
+		pack();
+		setVisible(true);
 	}
 
 

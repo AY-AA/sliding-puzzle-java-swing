@@ -24,17 +24,11 @@ public class StartPuzzle extends JFrame
 {
 	public StartPuzzle()
 	{
-		setTitle("Background Color for JFrame");
+		setTitle("Welcome");
 		setSize(400,400);
 		setLocationRelativeTo(null);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setVisible(true);
-		
-		
-		setLayout(new BorderLayout());
-		JLabel background=new JLabel(new ImageIcon("C://"));
-		add(background);
-		background.setLayout(new FlowLayout());
 	
 	
 	}
