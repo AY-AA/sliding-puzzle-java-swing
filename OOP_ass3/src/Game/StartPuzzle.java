@@ -6,6 +6,8 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.GridBagConstraints;
+import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -26,11 +28,14 @@ import javax.swing.JFrame;
 public class StartPuzzle extends JFrame
 {
 	private JPanel main = new JPanel();
-	private JButton open,start;
+	private JButton open,play;
 	private JFileChooser fileChooser;
 	private BufferedImage image;
 	private JLabel puzzleImage = new JLabel("Select an image and difficulty level");
 	private JTextField nxn;
+	private GridBagConstraints gbc = new GridBagConstraints();
+	private ImageIcon open_Icon,play_Icon;
+
 
 	public StartPuzzle()
 	{
@@ -38,14 +43,29 @@ public class StartPuzzle extends JFrame
 		setSize(400,400);
 		setLocationRelativeTo(null);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		setVisible(true);
+		main.setLayout(new GridLayout());
 		
 		//============= Buttons 
-		//ImageIcon open_Image = 
-        open = new JButton();
+		open_Icon = new ImageIcon("open_pic.png");
+        open = new JButton("Open");      
+        open.setIcon(open_Icon);
+        play_Icon = new ImageIcon("play_pic.png");
+        play = new JButton("Play");
+        play.setIcon(play_Icon);      
         
+      //============= adding to JPanel main
+        gbc.gridx = 6;
+        gbc.gridy = 8;
+        main.add(open, gbc);
         
-        start = new JButton();
+        gbc.gridx = 5;
+        gbc.gridy = 8;
+        main.add(play, gbc);
+        
+        add(main);
+		setVisible(true);
+
+        
 	}
 	public static void main(String[] args) {
 		StartPuzzle sp = new StartPuzzle();
