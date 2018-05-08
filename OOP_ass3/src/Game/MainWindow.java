@@ -28,8 +28,8 @@ public class MainWindow extends JFrame implements ActionListener {
 	private JButton exit;
 	private JButton start_Game;
 	private ImageIcon puzzleBackground;
-	private JLabel back_Label;
-	private GridBagConstraints grid = new GridBagConstraints();
+//	private JLabel back_Label;
+//	private GridBagConstraints grid = new GridBagConstraints();
 	
 	public MainWindow() 
 	{
@@ -41,25 +41,48 @@ public class MainWindow extends JFrame implements ActionListener {
 		
 		//===== Background =====
 		puzzleBackground = new ImageIcon("MyBackground.jpg");
-		back_Label = new JLabel(puzzleBackground);
-		back_Label.setLayout(new BorderLayout());
+		setContentPane(new JLabel(puzzleBackground));
+		
+        getContentPane().setLayout(new GridBagLayout());
+        GridBagConstraints c = new GridBagConstraints();
+		
+        exit = new JButton("Exit");
+        exit.setSize(30, 30);
+        c.gridx = 0;
+        c.gridy = 0;
+        getContentPane().add(exit, c);
+		exit.addActionListener(this);
+
+		start_Game = new JButton("Start to play");
+		start_Game.setSize(30, 50);
+		c.ipadx=20;
+		c.gridx = 0;
+        c.gridy = 1;
+        getContentPane().add(start_Game, c);
+		exit.addActionListener(this);
+		start_Game.addActionListener(this);
+
+		
+		
+//		
+//		back_Label = new JLabel(puzzleBackground);
+//		back_Label.setLayout(new BorderLayout());
 		
 		//===== Buttons =====
-		exit = new JButton("Exit");
-		back_Label.add(exit,BorderLayout.CENTER);
-		exit.addActionListener(this);
-		
-		start_Game = new JButton("Start to play");
-		back_Label.add(start_Game,BorderLayout.EAST);
-		start_Game.addActionListener(this);
-		
-		add(back_Label);
+//		back_Label.add(exit,BorderLayout.CENTER);
+//		
+//		back_Label.add(start_Game,BorderLayout.EAST);
+//		
+//		add(back_Label);
 		pack();
 		setVisible(true);
 	}
 
 
-
+	public static void main(String args[])
+	{
+		MainWindow a = new MainWindow();
+	}
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == exit)
