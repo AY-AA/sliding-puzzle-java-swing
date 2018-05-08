@@ -37,7 +37,7 @@ public class MainWindow extends JFrame implements ActionListener {
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setSize(450,300);
 		setLocationRelativeTo(null);
-		setResizable(false);
+		//setResizable(false);
 		
 		//===== Background =====
 		puzzleBackground = new ImageIcon("MyBackground.jpg");
