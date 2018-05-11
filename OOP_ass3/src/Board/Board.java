@@ -44,6 +44,16 @@ public class Board extends JPanel{
 		initBoard(puzzle);
 		this.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
 	}
+	
+	//-------------------------- Getters and Setters
+	public boolean isDone() {
+		return this.isDone;
+	}
+	public int getDimesion() {
+		return this.dimension;
+	}
+	//--------------------------
+	
 	/**
 	 * Initiating the board data structure in order to create from it the board it self
 	 * @param puzzle
@@ -62,6 +72,7 @@ public class Board extends JPanel{
 		remover();
 		place = 0;
 	}
+	
 	/**
 	 * Shuffling the board itself and adding it to the JPanel
 	 */
@@ -79,13 +90,16 @@ public class Board extends JPanel{
 				board[i][j] = new Cell(i, j, place, boardDS.get(randomIndex).getFigure());
 				boardDS.remove(randomIndex);
 				place++;
-
 			}
 		}
 		boardDS = hardCopy;
 		remover();
 
 	}
+	
+	/**
+	 * Updating the board each move by user
+	 */
 	public void updateBoard(){
 
 		for(int i = 0; i < dimension; i++){
@@ -101,6 +115,7 @@ public class Board extends JPanel{
 		}
 		//Puzzle.getContainer().validate();
 	}
+	
 	public void remover(){
 		this.removeAll();
 		updateBoard();
@@ -108,8 +123,8 @@ public class Board extends JPanel{
 
 	public boolean move(int x, int y, Figure movingFigure) {
 		try{
-			if(board[x][y +1].getFigure() == null){ 
-				board[x][y +1] = new Cell(x,y + 1,movingFigure);
+			if(board[x][y + 1].getFigure() == null){ 
+				board[x][y + 1] = new Cell(x,y + 1,movingFigure);
 				board[x][y] = null;
 				movingFigure.setY = y + 1;
 				removeAll();
@@ -171,7 +186,7 @@ public class Board extends JPanel{
 	private void CheckAnswer() {
 		for(int i = 0; i < dimension; i++){
 			for(int j = 0; j < dimension; j++){	
-				if(board[i][j].getFigure().getPlace != board[i][j].getPlaec()) {
+				if(board[i][j].getFigure().getCellNumber != board[i][j].getPlaec()) {
 					isDone = false;
 					return;
 				}
@@ -179,6 +194,7 @@ public class Board extends JPanel{
 		}
 		isDone = true;
 	}
+	
 	public void moveByKey(String string) {
 
 		if(string.equals("UP")) {
@@ -193,8 +209,5 @@ public class Board extends JPanel{
 		else { // if right
 
 		}
-	}
-	public int getDimesion() {
-		return this.dimension;
 	}
 }
