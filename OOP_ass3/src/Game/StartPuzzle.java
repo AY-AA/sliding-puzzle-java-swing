@@ -93,13 +93,13 @@ public class StartPuzzle extends JFrame implements ActionListener
 
 		});
 
-		open_Icon = new ImageIcon("open_pic.png");
+		open_Icon = new ImageIcon("open_64.png");
 		open = new JButton("Open");
 		open.setName("Open");
 		open.setIcon(open_Icon);
 		open.addActionListener(this);
 
-		play_Icon = new ImageIcon("play_pic.png");
+		play_Icon = new ImageIcon("puzzle_play2.png");
 		play = new JButton("Play");
 		play.setName("Play");
 		play.setIcon(play_Icon);  

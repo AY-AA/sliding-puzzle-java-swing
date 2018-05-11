@@ -15,7 +15,7 @@ import Board.Cell;
 import Board.Figure;
 import Game.Puzzle;
 
-public class Board extends JPanel{
+public class Board1 extends JPanel{
 
 	private ArrayList<Cell> boardDS; //Data Structure to hold the board.
 	private int[][] positions;
@@ -31,7 +31,7 @@ public class Board extends JPanel{
 	 * @param dimension
 	 * @param puzzle
 	 */
-	public Board(int dimension, BufferedImage puzzle){
+	public Board1(int dimension, BufferedImage puzzle){
 		this.setPreferredSize(new Dimension(410, 0));
 		this.setBorder(BorderFactory.createLineBorder(Color.RED, 5));
 		this.setBackground(Color.BLACK);
@@ -88,12 +88,8 @@ public class Board extends JPanel{
 		for(int i = 0; i < dimension; i++){
 			for(int j = 0; j < dimension; j++){	
 				int randomIndex = randomGenerator.nextInt(boardDS.size());
-				boardDS.get(randomIndex).getFigure().setX(i);
-				boardDS.get(randomIndex).getFigure().setY(j);
-				boardDS.get(randomIndex).getFigure().setCellNumber(place);
-				board[i][j] = new Cell(i, j, place, boardDS.get(randomIndex).getFigure());
+				positions[i][j] = boardDS.get(randomIndex).getFigure().getCellNumber();
 				boardDS.remove(randomIndex);
-				place++;
 			}
 		}
 		boardDS = hardCopy;
@@ -107,13 +103,9 @@ public class Board extends JPanel{
 
 		for(int i = 0; i < dimension; i++){
 			for(int j = 0; j < dimension; j++){	
-				if(board[i][j].getFigure() == null){
-					label = new JLabel();
-					label.setPreferredSize(new Dimension(figureWidth, figureHeight));
-					this.add(label);
-					continue;
-				}
-				this.add(board[i][j].getFigure());
+				int currPos = positions[i][j];
+				Figure tmp = boardDS.get(currPos).getFigure();
+				this.add(tmp);
 			}
 		}
 		//Puzzle.getContainer().validate();
@@ -130,11 +122,9 @@ public class Board extends JPanel{
 	 * @return
 	 */
 	public boolean move(Figure movingFigure) {
-		int x = movingFigure.getX();
-		int y = movingFigure.getY();
-		int currPlace = movingFigure.getCellNumber();
+		
 		try{ 
-			if(board[x][y + 1].getFigure() == null){ // if up is empty
+			if(positions[x][y+1] == 0){ // if up is empty
 				board[x][y + 1] = new Cell(x, y + 1, currPlace - dimension, movingFigure);
 				board[x][y] = null;
 				movingFigure.setY(y + 1);
