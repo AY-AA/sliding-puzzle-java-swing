@@ -32,11 +32,11 @@ public class MainWindow extends JFrame implements ActionListener {
         menu.setLayout(new GridBagLayout());
 
         //-------------------------- Buttons
-        ImageIcon exit_64 = new ImageIcon("exit_64.png");
+        ImageIcon exit_64 = new ImageIcon("exit1_64.png");
         exit = new JButton("Exit", exit_64);
         exit.addActionListener(this);
         
-        ImageIcon puzzle1_64 = new ImageIcon("puzzle1_64.png");
+        ImageIcon puzzle1_64 = new ImageIcon("puzzle_play.png");
         start_Game = new JButton("play",puzzle1_64);
         start_Game.addActionListener(this);
         
@@ -47,8 +47,8 @@ public class MainWindow extends JFrame implements ActionListener {
         gbc.gridwidth = GridBagConstraints.REMAINDER;
         
         //-------------------------- Adding to panel and frame
-        menu.add(exit, gbc);
         menu.add(start_Game, gbc);
+        menu.add(exit, gbc);
 
         add(menu, BorderLayout.EAST);
         pack();

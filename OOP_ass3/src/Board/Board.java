@@ -43,6 +43,7 @@ public class Board extends JPanel{
 		place = 0;
 		initBoard(puzzle);
 		this.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
+		isDone = false;
 	}
 	
 	//-------------------------- Getters and Setters
@@ -94,7 +95,6 @@ public class Board extends JPanel{
 		}
 		boardDS = hardCopy;
 		remover();
-
 	}
 	
 	/**
@@ -121,6 +121,11 @@ public class Board extends JPanel{
 		updateBoard();
 	}
 	
+	/**
+	 * moving figure on the board if the move is legal
+	 * @param movingFigure
+	 * @return
+	 */
 	public boolean move(Figure movingFigure) {
 		int x = movingFigure.getX();
 		int y = movingFigure.getY();
@@ -184,7 +189,10 @@ public class Board extends JPanel{
 		}
 		return false;
 	}
-
+	
+	/**
+	 * checks if the game is done
+	 */
 	private void CheckAnswer() {
 		for(int i = 0; i < dimension; i++){
 			for(int j = 0; j < dimension; j++){	
@@ -197,7 +205,11 @@ public class Board extends JPanel{
 		isDone = true;
 	}
 	
-	public void moveByKey(String string) {
+	/**
+	 * moving figure using the keyboard keys by user
+	 * @param string
+	 */
+	public boolean moveByKey(String string) {
 
 		if(string.equals("UP")) {
 
@@ -211,5 +223,13 @@ public class Board extends JPanel{
 		else { // if right
 
 		}
+		return false;
 	}
+	
+	public Board duplicateBoard() {
+		return null;
+	}
+	public static void main
 }
+
+
