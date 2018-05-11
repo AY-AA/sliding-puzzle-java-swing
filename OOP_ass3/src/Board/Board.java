@@ -49,7 +49,7 @@ public class Board extends JPanel{
 	public boolean isDone() {
 		return this.isDone;
 	}
-	public int getDimesion() {
+	public int getDimension() {
 		return this.dimension;
 	}
 	//--------------------------
@@ -86,7 +86,7 @@ public class Board extends JPanel{
 				int randomIndex = randomGenerator.nextInt(boardDS.size());
 				boardDS.get(randomIndex).getFigure().setX(i);
 				boardDS.get(randomIndex).getFigure().setY(j);
-				boardDS.get(randomIndex).getFigure().setPlaec(place);
+				boardDS.get(randomIndex).getFigure().setCellNumber(place);
 				board[i][j] = new Cell(i, j, place, boardDS.get(randomIndex).getFigure());
 				boardDS.remove(randomIndex);
 				place++;
@@ -120,17 +120,34 @@ public class Board extends JPanel{
 		this.removeAll();
 		updateBoard();
 	}
-
-	public boolean move(int x, int y, Figure movingFigure) {
-		try{
-			if(board[x][y + 1].getFigure() == null){ 
-				board[x][y + 1] = new Cell(x,y + 1,movingFigure);
+	
+	public boolean move(Figure movingFigure) {
+		int x = movingFigure.getX();
+		int y = movingFigure.getY();
+		int currPlace = movingFigure.getCellNumber();
+		try{ 
+			if(board[x][y + 1].getFigure() == null){ // if up is empty
+				board[x][y + 1] = new Cell(x, y + 1, currPlace - dimension, movingFigure);
 				board[x][y] = null;
-				movingFigure.setY = y + 1;
+				movingFigure.setY(y + 1);
 				removeAll();
 				updateBoard();
 				CheckAnswer();
-				Puzzle.add();
+				//Puzzle.add();
+				return true;
+			}
+		}catch(ArrayIndexOutOfBoundsException e){
+
+		}
+		try{
+			if(board[x + 1][y].getFigure() == null){ //if right is empty
+				board[x + 1][y] = new Cell(x + 1, y, currPlace + 1, movingFigure);
+				board[x][y] = null;
+				movingFigure.setX(x + 1);
+				removeAll();
+				updateBoard();
+				CheckAnswer();
+				//Puzzle.add();
 				return true;
 
 			}
@@ -138,43 +155,28 @@ public class Board extends JPanel{
 
 		}
 		try{
-			if(board[x + 1][y].getFigure() == null){ 
-				board[x + 1][y] = new Cell(x + 1,y,movingFigure);
+			if(board[x - 1][y].getFigure() == null){ // if left is empty
+				board[x - 1][y] = new Cell(x - 1, y, currPlace - 1, movingFigure);
 				board[x][y] = null;
-				movingFigure.setX = x + 1;
+				movingFigure.setX(x - 1);
 				removeAll();
 				updateBoard();
 				CheckAnswer();
-				Puzzle.add();
-				return true;
-
-			}
-		}catch(ArrayIndexOutOfBoundsException e){
-
-		}
-		try{
-			if(board[x - 1][y].getFigure() == null){ 
-				board[x - 1][y] = new Cell(x - 1,y,movingFigure);
-				board[x][y] = null;
-				movingFigure.setX = x - 1;
-				removeAll();
-				updateBoard();
-				CheckAnswer();
-				Puzzle.add();
+				//Puzzle.add();
 				return true;
 			}
 		}catch(ArrayIndexOutOfBoundsException e){
 
 		}
 		try{
-			if(board[x][y - 1].getFigure() == null){ 
-				board[x + 1][y - 1] = new Cell(x,y - 1,movingFigure);
+			if(board[x][y - 1].getFigure() == null){ // if down is empty
+				board[x + 1][y - 1] = new Cell(x, y - 1, currPlace + dimension, movingFigure);
 				board[x][y] = null;
-				movingFigure.setY = y - 1;
+				movingFigure.setY(y - 1);
 				removeAll();
 				updateBoard();
 				CheckAnswer();
-				Puzzle.add();
+				//Puzzle.add();
 				return true;
 			}
 		}catch(ArrayIndexOutOfBoundsException e){
@@ -186,7 +188,7 @@ public class Board extends JPanel{
 	private void CheckAnswer() {
 		for(int i = 0; i < dimension; i++){
 			for(int j = 0; j < dimension; j++){	
-				if(board[i][j].getFigure().getCellNumber != board[i][j].getPlaec()) {
+				if(board[i][j].getFigure().getCellNumber() != board[i][j].getPlaec()) {
 					isDone = false;
 					return;
 				}
