@@ -8,6 +8,7 @@ import Board.*;
 import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
 import java.util.Stack;
 
 import javax.swing.*;
@@ -16,9 +17,11 @@ import javax.swing.*;
 
 public class Puzzle extends JFrame implements ActionListener, KeyListener, PropertyChangeListener
 {
-	
-	private Stack _boardsStack;
-	private static Figure _lastPressed;
+	// --- STACK ---
+	private int[][] _currentBoard;				//for each 0<i<(board size)^2 this int array specifies where is the current index i in the board matrix
+	private Stack _boardsStack;					//stack which holds the boards
+	private static Figure _lastPressed;			//last pressed figure is hold by this static property
+	private ArrayList<Cell> _boardDS;
 	
 	// --- TIMER ---
 	private Timer _timer;
@@ -32,36 +35,39 @@ public class Puzzle extends JFrame implements ActionListener, KeyListener, Prope
 	private JButton _stopStartButton;
 	private JButton _undoButton;
 	private JButton _changeImageButton;
-	private JButton _menuButton;  //this.setVisible(false)
-	private ImageIcon _stopIcon, _startIcon, _undoIcon, _changeImageIcon, _menuIcon;
+	private JButton _menuButton;  
+	private ImageIcon _stopIcon, _startIcon, _undoIcon, _changeImageIcon, _menuIcon, _playAgainIcon;	
 	
 	// --- PUZZLE SCREEN ---
 	private Board _board;
 	private static int _boardDimension=0;
-	
-	public static Figure EMPTY_FIGURE;
-	
+		
 	// --- FOOTER INFO ---
 	private JLabel _secondsLabel;
 	private JLabel _minutesLabel;
 	private JLabel _hoursLabel;
 	private JLabel _movesCounterLabel;
 	private int _movesCounter;
-
 	private JToolBar _infoToolbar;
+	
+	// --- GAME FINISHED ---
+	private boolean _isFinished;
+	private JButton _playAgainButton;
+
 	
 	public Puzzle (Board board)
 	{
 		super("Sliding Puzzle");
 		_board = board;
+		_boardDS = _board.getBoardDS();
 		_boardDimension = _board.getDimension();
 		_boardsStack = new Stack();
 		_boardsStack.push(_board);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
-		
 		addComponents();
 		
+		resetTimer();
 		_timer = new Timer(1000,this);
 		_timer.start();
 		
@@ -84,6 +90,7 @@ public class Puzzle extends JFrame implements ActionListener, KeyListener, Prope
 		
 		// initialize header toolbar items
 		_isStopped = false;
+		_isFinished = false;
 		_stopStartButton = new JButton("Stop");
 		_stopStartButton.setIcon(_stopIcon);
 		_stopStartButton.addActionListener(this);
@@ -99,6 +106,9 @@ public class Puzzle extends JFrame implements ActionListener, KeyListener, Prope
 		_menuButton = new JButton("Menu");
 		_menuButton.setIcon(_menuIcon);
 		_menuButton.addActionListener(this);
+		
+		_playAgainButton = new JButton("Play again");
+		_playAgainButton.setIcon(_playAgainIcon);
 		
 		// add items to toolbar
 		_controlsToolbar = new JToolBar();
@@ -162,7 +172,7 @@ public class Puzzle extends JFrame implements ActionListener, KeyListener, Prope
 		}
 		else if (e.getSource() == _changeImageButton)
 		{
-//			backToChooseImage();
+			backToChooseImage();
 		}
 		else if (e.getSource() == _undoButton)
 		{
@@ -194,8 +204,8 @@ public class Puzzle extends JFrame implements ActionListener, KeyListener, Prope
 
 	private void undo()
 	{
-		_board = (Board)_boardsStack.pop();
-		updateBoardStack();
+		_currentBoard = (int[][])_boardsStack.pop();
+		_board = new Board(_currentBoard, _boardDS);
 	}
 
 	private void updateTimerLabel() 
@@ -212,9 +222,7 @@ public class Puzzle extends JFrame implements ActionListener, KeyListener, Prope
 			_minutes = 0;
 			_hours++;
 		}
-		_hoursLabel.setText(String.format("%02d", _hours) + ":");
-		_minutesLabel.setText(String.format("%02d", _minutes) + ":");
-		_secondsLabel.setText(String.format("%02d", _seconds));		
+		
 	}
 	private void resetTimer()
 	{
@@ -236,25 +244,25 @@ public class Puzzle extends JFrame implements ActionListener, KeyListener, Prope
 	            if (!_isStopped && _board.moveByKey("UP"))
 	            	updateBoardStack(); 
 	            else
-	            	error("paused");
+	            	alert("paused");
 	            break;
 	        case KeyEvent.VK_DOWN:
 	        	if (!_isStopped && _board.moveByKey("DOWN"))
 	            	updateBoardStack(); 
 	            else
-	            	error("paused");
+	            	alert("paused");
 	            break;
 	        case KeyEvent.VK_LEFT:
 	        	if (!_isStopped && _board.moveByKey("LEFT"))
 	            	updateBoardStack(); 
 	            else
-	            	error("paused");
+	            	alert("paused");
 	            break;
 	        case KeyEvent.VK_RIGHT :
 	        	if (!_isStopped && _board.moveByKey("RIGHT"))
 	            	updateBoardStack(); 
 	            else
-	            	error("paused");
+	            	alert("paused");
 	            break;
 	        case KeyEvent.VK_SPACE :
 	        	_isStopped = !_isStopped;
@@ -263,7 +271,7 @@ public class Puzzle extends JFrame implements ActionListener, KeyListener, Prope
 	        	if (!_isStopped && (e.getModifiers() & KeyEvent.CTRL_MASK) != 0)   //ctrl+z
 	        		undo();
 	            else
-	            	error("paused");
+	            	alert("paused");
 	     }
 	} 
 
@@ -280,13 +288,27 @@ public class Puzzle extends JFrame implements ActionListener, KeyListener, Prope
 	public void updateBoardStack() 
 	{
 		_movesCounter++;
-		_boardsStack.push(_board.duplicate());
+		_currentBoard = _board.getBoard();
+		_boardsStack.push(_currentBoard);
+		if (_board.isGameOver())
+			finishGame();
+	}
+	
+	private void finishGame()
+	{
+		alert("finish");
+		
+		
+		
+		add((JPanel)_board, BorderLayout.CENTER);
+
+		
 	}
 	
 	public static void main(String args[])
 	{
-		BufferedImage x = new BufferedImage(100,100,4);
-		Puzzle p = new Puzzle(new Board(3, x));
+//		BufferedImage x = new BufferedImage(100,100,4);
+//		Puzzle p = new Puzzle(new Board(3, x));
 	}
 
 	@Override
@@ -297,7 +319,12 @@ public class Puzzle extends JFrame implements ActionListener, KeyListener, Prope
 			if (_board.move(_lastPressed))
 				updateBoardStack();	
 		}
-		
+		else if (prop.getSource().equals(_seconds))
+			_secondsLabel.setText(String.format("%02d", _seconds));
+		else if (prop.getSource().equals(_minutes))
+			_minutesLabel.setText(String.format("%02d", _minutes) + ":");
+		else if (prop.getSource().equals(_hours))
+			_hoursLabel.setText(String.format("%02d", _hours) + ":");		
 	}
 
 
