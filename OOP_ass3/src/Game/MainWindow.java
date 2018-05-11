@@ -1,99 +1,73 @@
 package Game;
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Font;
-import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
-import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
-
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JToolBar;
-import javax.swing.Timer;
-
 
 public class MainWindow extends JFrame implements ActionListener {
-	
-	private JButton exit;
-	private JButton start_Game;
-	private ImageIcon puzzleBackground;
-//	private JLabel back_Label;
-//	private GridBagConstraints grid = new GridBagConstraints();
-	
-	public MainWindow() 
-	{
-		super("Welcome");
-		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setSize(450,300);
-		setLocationRelativeTo(null);
-		setResizable(false);
-		
-		//===== Background =====
-		puzzleBackground = new ImageIcon("MyBackground.jpg");
-		setContentPane(new JLabel(puzzleBackground));
-		
-        getContentPane().setLayout(new GridBagLayout());
-        GridBagConstraints c = new GridBagConstraints();
-		
-        exit = new JButton("Exit");
-        exit.setSize(30, 30);
-        c.gridx = 0;
-        c.gridy = 0;
-        getContentPane().add(exit, c);
-		exit.addActionListener(this);
+// alex ya zin kfitz
+    private JButton exit;
+    private JButton start_Game;
+    private JPanel menu;
+    private JLabel background;
 
-		start_Game = new JButton("Start to play");
-		start_Game.setSize(30, 50);
-		c.ipadx=20;
-		c.gridx = 0;
-        c.gridy = 1;
-        getContentPane().add(start_Game, c);
-		exit.addActionListener(this);
-		start_Game.addActionListener(this);
+    public MainWindow() {
+    	//-------------------------- Window Preferences
+        super("Welcome");
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setLocationRelativeTo(null);
+        background = new JLabel(new ImageIcon("MyBackground.jpg"));
+        this.setContentPane(background);
+        this.setLayout(new BorderLayout());
+        menu = new JPanel();
+        menu.setLayout(new GridBagLayout());
 
-		
-		
-//		
-//		back_Label = new JLabel(puzzleBackground);
-//		back_Label.setLayout(new BorderLayout());
-		
-		//===== Buttons =====
-//		back_Label.add(exit,BorderLayout.CENTER);
-//		
-//		back_Label.add(start_Game,BorderLayout.EAST);
-//		
-//		add(back_Label);
-		pack();
-		setVisible(true);
-	}
+        //-------------------------- Buttons
+        ImageIcon exit_64 = new ImageIcon("exit_64.png");
+        exit = new JButton("Exit", exit_64);
+        exit.addActionListener(this);
+        
+        ImageIcon puzzle1_64 = new ImageIcon("puzzle1_64.png");
+        start_Game = new JButton("play",puzzle1_64);
+        start_Game.addActionListener(this);
+        
+        //-------------------------- Grid Layout preferences
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.weightx = 1;
+        gbc.fill = gbc.HORIZONTAL;
+        gbc.gridwidth = GridBagConstraints.REMAINDER;
+        
+        //-------------------------- Adding to panel and frame
+        menu.add(exit, gbc);
+        menu.add(start_Game, gbc);
 
+        add(menu, BorderLayout.EAST);
+        pack();
+        setVisible(true);
+    }
 
-	public static void main(String args[])
-	{
-		MainWindow a = new MainWindow();
-	}
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		if(e.getSource() == exit)
-		{
-			System.exit(0);
-		}
-		else
-		{
-			//open start up window.
-		}
-		
-	}
+    public static void main(String args[]) {
+        MainWindow a = new MainWindow();
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == exit) {
+            System.exit(0);
+        } else {
+            //open start up window.
+        }
+
+    }
 
 }
+    

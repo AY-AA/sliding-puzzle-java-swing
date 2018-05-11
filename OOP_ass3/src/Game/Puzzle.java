@@ -14,8 +14,6 @@ import javax.swing.*;
 
 public class Puzzle extends JFrame implements ActionListener, KeyListener
 {
-
-	
 	// --- TIMER ---
 	private Timer _timer;
 	private boolean _isStopped;
