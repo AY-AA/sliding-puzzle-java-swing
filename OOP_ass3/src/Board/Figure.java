@@ -28,14 +28,14 @@ public class Figure extends JButton implements ActionListener
 		
 		checkPosition();
 		
-		this.setIcon(figure);
-		this.addActionListener(this);				//JButton uses this implemented action performed
+		setIcon(figure);
+		addActionListener(this);				//JButton uses this implemented action performed
 	}
 	
 	@Override
 	public void actionPerformed(ActionEvent e)
 	{
-		move();
+		Puzzle.figurePressed(this);
 	}
 	
 	 
@@ -73,7 +73,6 @@ public class Figure extends JButton implements ActionListener
 		tFigure.setY(_yPosition);
 		_xPosition = tX;
 		_yPosition = tY;		
-		//Puzzle.updateBoard();
 	}
 	/**
 	 * checks if figure can be moved to the next or previous row by user's selection
@@ -127,6 +126,15 @@ public class Figure extends JButton implements ActionListener
 	}
 
 	public int getCellNumber()
+	{
+		return _cellNumber;
+	}
+	
+	public int getDimension()
+	{
+		return _dimension;
+	}
+	public int getCell()
 	{
 		return _cellNumber;
 	}

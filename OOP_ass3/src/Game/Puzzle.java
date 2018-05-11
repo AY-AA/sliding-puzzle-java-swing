@@ -6,22 +6,26 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import Board.*;
 import java.awt.image.BufferedImage;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.Stack;
 
 import javax.swing.*;
 
 
 
-public class Puzzle extends JFrame implements ActionListener, KeyListener
+public class Puzzle extends JFrame implements ActionListener, KeyListener, PropertyChangeListener
 {
+	
+	private Stack _boardsStack;
+	private static Figure _lastPressed;
+	
 	// --- TIMER ---
 	private Timer _timer;
 	private boolean _isStopped;
 	private int _seconds = 0;
 	private int _minutes = 0;
 	private int _hours = 0;	
-	
-	private Stack _boardsStack;
 		
 	// --- HEADER TOOLBAR ---
 	private JToolBar _controlsToolbar;
@@ -32,7 +36,8 @@ public class Puzzle extends JFrame implements ActionListener, KeyListener
 	private ImageIcon _stopIcon, _startIcon, _undoIcon, _changeImageIcon, _menuIcon;
 	
 	// --- PUZZLE SCREEN ---
-	private JPanel _board;
+	private Board _board;
+	private static int _boardDimension=0;
 	
 	public static Figure EMPTY_FIGURE;
 	
@@ -45,13 +50,15 @@ public class Puzzle extends JFrame implements ActionListener, KeyListener
 
 	private JToolBar _infoToolbar;
 	
-	public Puzzle (JPanel board)
+	public Puzzle (Board board)
 	{
 		super("Sliding Puzzle");
 		_board = board;
+		_boardDimension = _board.getDimension();
 		_boardsStack = new Stack();
 		_boardsStack.push(_board);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
 		
 		addComponents();
 		
@@ -126,11 +133,17 @@ public class Puzzle extends JFrame implements ActionListener, KeyListener
 		
 		// add items to container
 		add(_controlsToolbar, BorderLayout.NORTH);
-		add(_board, BorderLayout.CENTER);
+		add((JPanel)_board, BorderLayout.CENTER);
 		add(_infoToolbar, BorderLayout.SOUTH);
 
 	}
-
+	
+	public static void figurePressed(Figure fig)
+	{
+		if (fig.getDimension() == _boardDimension)
+			_lastPressed = fig;
+	}
+	
 	@Override
 	public void actionPerformed(ActionEvent e)
 	{
@@ -139,7 +152,7 @@ public class Puzzle extends JFrame implements ActionListener, KeyListener
 			changePauseStartButton();
 			resetTimer();
 		}
-		if (e.getSource() == _timer && _isStopped == false)
+		if (e.getSource() == _timer && !_isStopped)
 		{
 			updateTimerLabel();
 		}
@@ -221,19 +234,72 @@ public class Puzzle extends JFrame implements ActionListener, KeyListener
 	    switch( keyCode ) 
 	    { 
 	        case KeyEvent.VK_UP:
-	            ((Board)_board).moveByKey("up");
+	            if (!_isStopped && _board.moveByKey("up"))
+	            	updateBoardStack(); 
+	            else
+	            	error("paused");
 	            break;
 	        case KeyEvent.VK_DOWN:
-	        	((Board)_board).moveByKey("down");
+	        	if (!_isStopped && _board.moveByKey("down"))
+	            	updateBoardStack(); 
+	            else
+	            	error("paused");
 	            break;
 	        case KeyEvent.VK_LEFT:
-	        	((Board)_board).moveByKey("left");
+	        	if (!_isStopped && _board.moveByKey("left"))
+	            	updateBoardStack(); 
+	            else
+	            	error("paused");
 	            break;
 	        case KeyEvent.VK_RIGHT :
-	        	((Board)_board).moveByKey("right");
+	        	if (!_isStopped && _board.moveByKey("right"))
+	            	updateBoardStack(); 
+	            else
+	            	error("paused");
 	            break;
+	        case KeyEvent.VK_SPACE :
+	        	_isStopped = !_isStopped;
+	        	break;
+	        case KeyEvent.VK_Z:
+	        	if (!_isStopped && (e.getModifiers() & KeyEvent.CTRL_MASK) != 0)   //ctrl+z
+	        		undo();
+	            else
+	            	error("paused");
 	     }
 	} 
+
+	private void error(String error) 
+	{
+		if (error.equals("paused"))
+	        JOptionPane.showMessageDialog(null, "Can not make moves while game is paused,"
+					+ '\n' +  "please press play first and then make moves ", 
+					"Game is paused", JOptionPane.CLOSED_OPTION);
+	}
+
+	public void updateBoardStack() 
+	{
+		_movesCounter++;
+		_boardsStack.push(_board.duplicate());
+	}
+	
+	public static void main(String args[])
+	{
+		BufferedImage x = new BufferedImage(100,100,4);
+		Puzzle p = new Puzzle(new Board(3, x));
+	}
+
+	@Override
+	public void propertyChange(PropertyChangeEvent prop)
+	{
+		if (prop.getSource().equals(_lastPressed))
+		{
+			if (_board.move(_lastPressed))
+				updateBoardStack();	
+		}
+		
+	}
+
+
 	@Override
 	public void keyReleased(KeyEvent arg0) {
 		// TODO Auto-generated method stub
@@ -245,15 +311,4 @@ public class Puzzle extends JFrame implements ActionListener, KeyListener
 
 	}
 
-	public void updateBoard() 
-	{
-		_movesCounter++;
-		_boardsStack.push(_board);
-		
-	}
-	
-	public static void main(String args[])
-	{
-		Puzzle p = new Puzzle(new JPanel());
-	}
 }
