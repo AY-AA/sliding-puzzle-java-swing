@@ -17,10 +17,10 @@ public class Figure extends JButton implements ActionListener
 	private final int _cellNumber;
 	private boolean _inSolution;
 	
-	public Figure(int solX, int xolY, int x, int y,int dim, int cell, ImageIcon figure) 
+	public Figure(int solX, int solY, int x, int y,int dim, int cell, ImageIcon figure) 
 	{
 		_xSolution=solX;
-		_ySolution=xolY;
+		_ySolution=solY;
 		_xPosition = x;
 		_yPosition = y;
 		_dimension = dim;
