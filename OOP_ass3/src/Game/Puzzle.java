@@ -84,12 +84,12 @@ public class Puzzle extends JFrame implements ActionListener, KeyListener, Prope
 	private void addComponents()
 	{
 		// set icons
-		_stopIcon = new ImageIcon("stopIcon.png"); 
-		_startIcon = new ImageIcon("startIcon.png"); 
-		_undoIcon = new ImageIcon("undoIcon.png"); 
-		_changeImageIcon = new ImageIcon("changeImageIcon.png"); 
-		_menuIcon = new ImageIcon("menuIcon.png"); 
-		_playAgainIcon = new ImageIcon ("playAgainIcon.png");
+		_stopIcon = new ImageIcon("Images/stopIcon.png"); 
+		_startIcon = new ImageIcon("Images/startIcon.png"); 
+		_undoIcon = new ImageIcon("Images/undoIcon.png"); 
+		_changeImageIcon = new ImageIcon("Images/changeImageIcon.png"); 
+		_menuIcon = new ImageIcon("Images/menuIcon.png"); 
+		_playAgainIcon = new ImageIcon ("Images/playAgainIcon.png");
 		
 		// initialize header toolbar items
 		_isStopped = false;
