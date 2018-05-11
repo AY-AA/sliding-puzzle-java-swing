@@ -32,10 +32,12 @@ public class MainWindow extends JFrame implements ActionListener {
         menu.setLayout(new GridBagLayout());
 
         //-------------------------- Buttons
-        exit = new JButton("Exit");
+        ImageIcon exit_64 = new ImageIcon("exit_64.png");
+        exit = new JButton("Exit", exit_64);
         exit.addActionListener(this);
-
-        start_Game = new JButton("Start to play");
+        
+        ImageIcon puzzle1_64 = new ImageIcon("puzzle1_64.png");
+        start_Game = new JButton("play",puzzle1_64);
         start_Game.addActionListener(this);
         
         //-------------------------- Grid Layout preferences
