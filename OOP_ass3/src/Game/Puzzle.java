@@ -162,7 +162,8 @@ public class Puzzle extends JFrame implements ActionListener, KeyListener
 	private void backToMenu() 
 	{
 		// TODO Auto-generated method stub
-		setVisible(false);
+		this.dispose();
+		//setVisible(false);
 		
 	}
 
