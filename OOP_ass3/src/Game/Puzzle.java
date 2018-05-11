@@ -40,7 +40,7 @@ public class Puzzle extends JFrame implements ActionListener, KeyListener, Prope
 	
 	// --- PUZZLE SCREEN ---
 	private Board _board;
-	private static int _boardDimension=0;
+	private static int _boardDimension = 0;
 		
 	// --- FOOTER INFO ---
 	private JLabel _secondsLabel;
@@ -52,9 +52,12 @@ public class Puzzle extends JFrame implements ActionListener, KeyListener, Prope
 	
 	// --- GAME FINISHED ---
 	private boolean _isFinished;
-	private JButton _playAgainButton;
 
-	
+	// --- CONSTRUCTOR ---
+	/**
+	 * Puzzle object constructor, creates a new windows and adds components using addComponents method
+	 * @param board is the sliding puzzle game component
+	 */
 	public Puzzle (Board board)
 	{
 		super("Sliding Puzzle");
@@ -75,18 +78,18 @@ public class Puzzle extends JFrame implements ActionListener, KeyListener, Prope
 		pack();
 		setVisible(true);		
 	}
-
+	/**
+	 * creates the items, icons and components which are presented during the game
+	 */
 	private void addComponents()
 	{
-	//	GridBagConstraints cell = new GridBagConstraints();
-		//cell.fill = GridBagConstraints.CENTER;
-		
 		// set icons
 		_stopIcon = new ImageIcon("stopIcon.png"); 
 		_startIcon = new ImageIcon("startIcon.png"); 
 		_undoIcon = new ImageIcon("undoIcon.png"); 
 		_changeImageIcon = new ImageIcon("changeImageIcon.png"); 
 		_menuIcon = new ImageIcon("menuIcon.png"); 
+		_playAgainIcon = new ImageIcon ("playAgainIcon.png");
 		
 		// initialize header toolbar items
 		_isStopped = false;
@@ -107,8 +110,6 @@ public class Puzzle extends JFrame implements ActionListener, KeyListener, Prope
 		_menuButton.setIcon(_menuIcon);
 		_menuButton.addActionListener(this);
 		
-		_playAgainButton = new JButton("Play again");
-		_playAgainButton.setIcon(_playAgainIcon);
 		
 		// add items to toolbar
 		_controlsToolbar = new JToolBar();
@@ -117,7 +118,6 @@ public class Puzzle extends JFrame implements ActionListener, KeyListener, Prope
 		_controlsToolbar.add(_changeImageButton);
 		_controlsToolbar.add(_menuButton);
 		_controlsToolbar.setFloatable(false);
-//        _controlsToolbar.setRollover(true);
 
 		// initialize timer 
 		_hoursLabel = new JLabel();
@@ -147,16 +147,156 @@ public class Puzzle extends JFrame implements ActionListener, KeyListener, Prope
 		add(_infoToolbar, BorderLayout.SOUTH);
 
 	}
+
+	// --- BUTTONS ---
+	/**
+	 * closes the game and goes back to image choosing window
+	 */
+	private void backToChooseImage() 
+	{
+		new StartPuzzle();
+		dispose();
+	}
+	/**
+	 * closes the game and goes back to main screen
+	 */
+	private void backToMenu() 
+	{
+		new MainWindow();
+		dispose();		
+	}
+	/**
+	 * undo last move
+	 */
+	private void undo()
+	{
+		_currentBoard = (int[][])_boardsStack.pop();
+		_board = new Board(_currentBoard, _boardDS);
+	}
+	/**
+	 * changes the start and stop icons whenever it is clicked and also stop the timer if game is paused
+	 */
+	private void changePauseStartButton()
+	{
+		_isStopped = !_isStopped;
+		if (_isStopped)
+		{
+			_stopStartButton.setIcon(_startIcon);
+			_stopStartButton.setText("Start");
+		}
+		else
+		{
+			_stopStartButton.setIcon(_stopIcon);
+			_stopStartButton.setText("Stop");
+		}
+	}
+	/**
+	 * if the game is over and the user wants to play again, this method recreates the board.
+	 */
+	private void playAgain() 
+	{
+		_boardsStack.clear();
+		_board.boardShuffle();
+		_currentBoard = _board.getBoard();
+		_isFinished = false;
+		_isStopped = false;
+		_stopStartButton.setIcon(_stopIcon);
+		_stopStartButton.setText("Stop");
+		resetTimer();
+	}
+
+	// --- TIMER ---
+	/**
+	 * updates the timer every second
+	 */
+	private void updateTimerLabel() 
+	{
+		_seconds++;
+		if (_seconds == 60)
+		{
+			_seconds = 0;
+			_minutes++;
+		}
+		if (_minutes == 60)
+		{
+			_seconds = 0;
+			_minutes = 0;
+			_hours++;
+		}		
+	}
+	/**
+	 * resets the timer
+	 */
+	private void resetTimer()
+	{
+		if (_isStopped == false)
+		{
+			_seconds = 0;
+			_minutes = 0;
+			_hours = 0;
+		}
+	}
+
 	
+	/**
+	 * a static method to handle the last clicked button (figure)
+	 * @param fig is the clicked figure the user chose
+	 */
 	public static void figurePressed(Figure fig)
 	{
 		if (fig.getDimension() == _boardDimension)
 			_lastPressed = fig;
 	}
+
+	/**
+	 * pushes a new board to the stack after a move is done and updates the moves counter
+	 */
+	private void updateBoardStack() 
+	{
+		_movesCounter++;
+		_currentBoard = _board.getBoard();
+		_boardsStack.push(_currentBoard);
+		if (_board.isGameOver())
+			finishGame();
+	}
+
+	/**
+	 * finishes the game whenever the user wins
+	 */
+	private void finishGame()
+	{
+		_isStopped = true;
+		alert("finish");
+		_stopStartButton.setIcon(_playAgainIcon);
+		_stopStartButton.setText("Play Again");	
+	}
 	
+	/**
+	 * handles the alerts shows to user 
+	 * @param alert is string which represent an alert type
+	 */
+	private void alert(String alert) 
+	{
+		if (alert.equals("paused"))
+	        JOptionPane.showMessageDialog(null, "Can not make moves while game is paused,"
+					+ '\n' +  "please press play first and then make moves ", 
+					"Game is paused", JOptionPane.CANCEL_OPTION);
+		else if (alert.equals("finish"))
+	        JOptionPane.showMessageDialog(null, "GOOD JOB!" + '\n' 
+	        		+ "Total moves :" + _movesCounter + '\n'
+	        		+ "Total time :" + _hoursLabel.getText() + _minutesLabel.getText() + _secondsLabel.getText(), "Game is over", JOptionPane.CLOSED_OPTION);
+		else if (alert.equals("play again"))
+			JOptionPane.showMessageDialog(null, "The game is finished,"
+					+ '\n' +  "please choose one of the buttons above.", "Game is over", JOptionPane.CANCEL_OPTION);				
+	}
+	
+	
+	// --- OVERRIDES ---	
 	@Override
 	public void actionPerformed(ActionEvent e)
 	{
+		if (_isFinished && e.getSource() == _stopStartButton)
+			playAgain();
 		if (e.getSource() == _stopStartButton)
 		{
 			changePauseStartButton();
@@ -179,146 +319,12 @@ public class Puzzle extends JFrame implements ActionListener, KeyListener, Prope
 			undo();
 		}
 	}
-
-	private void backToMenu() 
-	{
-		dispose();
-		//setVisible(false);
-		
-	}
-
-	private void changePauseStartButton()
-	{
-		_isStopped = !_isStopped;
-		if (_isStopped)
-		{
-			_stopStartButton.setIcon(_startIcon);
-			_stopStartButton.setText("Start");
-		}
-		else
-		{
-			_stopStartButton.setIcon(_stopIcon);
-			_stopStartButton.setText("Stop");
-		}
-	}
-
-	private void undo()
-	{
-		_currentBoard = (int[][])_boardsStack.pop();
-		_board = new Board(_currentBoard, _boardDS);
-	}
-
-	private void updateTimerLabel() 
-	{
-		_seconds++;
-		if (_seconds == 60)
-		{
-			_seconds = 0;
-			_minutes++;
-		}
-		if (_minutes == 60)
-		{
-			_seconds = 0;
-			_minutes = 0;
-			_hours++;
-		}
-		
-	}
-	private void resetTimer()
-	{
-		if (_isStopped == false)
-		{
-			_seconds = 0;
-			_minutes = 0;
-			_hours = 0;
-		}
-	}
-
-	@Override
-	public void keyPressed(KeyEvent e) 
-	{
-	    int keyCode = e.getKeyCode();
-	    switch( keyCode ) 
-	    { 
-	        case KeyEvent.VK_UP:
-	            if (!_isStopped && _board.moveByKey("UP"))
-	            	updateBoardStack(); 
-	            else
-	            	alert("paused");
-	            break;
-	        case KeyEvent.VK_DOWN:
-	        	if (!_isStopped && _board.moveByKey("DOWN"))
-	            	updateBoardStack(); 
-	            else
-	            	alert("paused");
-	            break;
-	        case KeyEvent.VK_LEFT:
-	        	if (!_isStopped && _board.moveByKey("LEFT"))
-	            	updateBoardStack(); 
-	            else
-	            	alert("paused");
-	            break;
-	        case KeyEvent.VK_RIGHT :
-	        	if (!_isStopped && _board.moveByKey("RIGHT"))
-	            	updateBoardStack(); 
-	            else
-	            	alert("paused");
-	            break;
-	        case KeyEvent.VK_SPACE :
-	        	_isStopped = !_isStopped;
-	        	break;
-	        case KeyEvent.VK_Z:
-	        	if (!_isStopped && (e.getModifiers() & KeyEvent.CTRL_MASK) != 0)   //ctrl+z
-	        		undo();
-	            else
-	            	alert("paused");
-	     }
-	} 
-
-	private void alert(String alert) 
-	{
-		if (alert.equals("paused"))
-	        JOptionPane.showMessageDialog(null, "Can not make moves while game is paused,"
-					+ '\n' +  "please press play first and then make moves ", 
-					"Game is paused", JOptionPane.CANCEL_OPTION);
-		if (alert.equals("finish"))
-	        JOptionPane.showMessageDialog(null, "GOOD JOB!","Game is over", JOptionPane.CLOSED_OPTION);
-	}
-
-	public void updateBoardStack() 
-	{
-		_movesCounter++;
-		_currentBoard = _board.getBoard();
-		_boardsStack.push(_currentBoard);
-		if (_board.isGameOver())
-			finishGame();
-	}
-	
-	private void finishGame()
-	{
-		alert("finish");
-		
-		
-		
-		add((JPanel)_board, BorderLayout.CENTER);
-
-		
-	}
-	
-	public static void main(String args[])
-	{
-//		BufferedImage x = new BufferedImage(100,100,4);
-//		Puzzle p = new Puzzle(new Board(3, x));
-	}
-
 	@Override
 	public void propertyChange(PropertyChangeEvent prop)
 	{
 		if (prop.getSource().equals(_lastPressed))
-		{
 			if (_board.move(_lastPressed))
 				updateBoardStack();	
-		}
 		else if (prop.getSource().equals(_seconds))
 			_secondsLabel.setText(String.format("%02d", _seconds));
 		else if (prop.getSource().equals(_minutes))
@@ -326,8 +332,62 @@ public class Puzzle extends JFrame implements ActionListener, KeyListener, Prope
 		else if (prop.getSource().equals(_hours))
 			_hoursLabel.setText(String.format("%02d", _hours) + ":");		
 	}
+	@Override
+	public void keyPressed(KeyEvent e) 
+	{
+		int keyCode = e.getKeyCode();
+		if (_isFinished)
+		{
+			alert("play again");
+		}
+		if (_isStopped)
+		{
+			alert("paused");
+			return;
+		}
+		if (keyCode == KeyEvent.VK_SPACE)
+		{
+	    	_isStopped = !_isStopped;
+	    	return;
+		}
 
+	    switch( keyCode ) 
+	    { 
+	        case KeyEvent.VK_UP:
+	        {
+	            if (_board.moveByKey("UP"))
+	            	updateBoardStack(); 
 
+	        }
+	            break;
+	        case KeyEvent.VK_DOWN:
+	        {
+	        	if (_board.moveByKey("DOWN"))
+	            	updateBoardStack(); 
+	            else
+	            	alert("paused");
+	        }
+	            break;
+	        case KeyEvent.VK_LEFT:
+	        {
+	        	if (_board.moveByKey("LEFT"))
+	            	updateBoardStack(); 
+
+	        }
+	            break;
+	        case KeyEvent.VK_RIGHT :
+	        {
+	        	if (_board.moveByKey("RIGHT"))
+	            	updateBoardStack(); 
+	        }
+	            break;
+	        case KeyEvent.VK_Z:
+	        {
+	        	if ((e.getModifiers() & KeyEvent.CTRL_MASK) != 0)   //ctrl+z
+	        		undo();
+	        }
+	     }
+	} 
 	@Override
 	public void keyReleased(KeyEvent arg0) {
 		// TODO Auto-generated method stub
