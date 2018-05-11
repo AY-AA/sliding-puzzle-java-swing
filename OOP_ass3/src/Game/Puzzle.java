@@ -172,8 +172,7 @@ public class Puzzle extends JFrame implements ActionListener, KeyListener, Prope
 
 	private void backToMenu() 
 	{
-		// TODO Auto-generated method stub
-		this.dispose();
+		dispose();
 		//setVisible(false);
 		
 	}
@@ -195,8 +194,8 @@ public class Puzzle extends JFrame implements ActionListener, KeyListener, Prope
 
 	private void undo()
 	{
-		_board = (JPanel) _boardsStack.pop();
-		updateBoard();
+		_board = (Board)_boardsStack.pop();
+		updateBoardStack();
 	}
 
 	private void updateTimerLabel() 
@@ -234,25 +233,25 @@ public class Puzzle extends JFrame implements ActionListener, KeyListener, Prope
 	    switch( keyCode ) 
 	    { 
 	        case KeyEvent.VK_UP:
-	            if (!_isStopped && _board.moveByKey("up"))
+	            if (!_isStopped && _board.moveByKey("UP"))
 	            	updateBoardStack(); 
 	            else
 	            	error("paused");
 	            break;
 	        case KeyEvent.VK_DOWN:
-	        	if (!_isStopped && _board.moveByKey("down"))
+	        	if (!_isStopped && _board.moveByKey("DOWN"))
 	            	updateBoardStack(); 
 	            else
 	            	error("paused");
 	            break;
 	        case KeyEvent.VK_LEFT:
-	        	if (!_isStopped && _board.moveByKey("left"))
+	        	if (!_isStopped && _board.moveByKey("LEFT"))
 	            	updateBoardStack(); 
 	            else
 	            	error("paused");
 	            break;
 	        case KeyEvent.VK_RIGHT :
-	        	if (!_isStopped && _board.moveByKey("right"))
+	        	if (!_isStopped && _board.moveByKey("RIGHT"))
 	            	updateBoardStack(); 
 	            else
 	            	error("paused");
@@ -268,12 +267,14 @@ public class Puzzle extends JFrame implements ActionListener, KeyListener, Prope
 	     }
 	} 
 
-	private void error(String error) 
+	private void alert(String alert) 
 	{
-		if (error.equals("paused"))
+		if (alert.equals("paused"))
 	        JOptionPane.showMessageDialog(null, "Can not make moves while game is paused,"
 					+ '\n' +  "please press play first and then make moves ", 
-					"Game is paused", JOptionPane.CLOSED_OPTION);
+					"Game is paused", JOptionPane.CANCEL_OPTION);
+		if (alert.equals("finish"))
+	        JOptionPane.showMessageDialog(null, "GOOD JOB!","Game is over", JOptionPane.CLOSED_OPTION);
 	}
 
 	public void updateBoardStack() 
