@@ -14,7 +14,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 public class MainWindow extends JFrame implements ActionListener {
-
+// alex ya zin kfitz
     private JButton exit;
     private JButton start_Game;
     private JPanel menu;
