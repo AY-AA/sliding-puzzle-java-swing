@@ -22,7 +22,9 @@ public class Board extends JPanel{
 	private int x, y;
 	private final int figureWidth, figureHeight;
 	private JLabel label;
-	private int counter;
+	private int place;
+	private boolean isDone;
+
 	/**
 	 * Constructor, receiving the image of the puzzle and the dimension of the board
 	 * @param dimension
@@ -36,9 +38,9 @@ public class Board extends JPanel{
 		board = new Cell[dimension][dimension];
 		x = 0;
 		y = 0;
-		figureWidth = puzzle.getWidth()/dimension;
+		figureWidth = puzzle.getWidth()/dimension; //size of each button
 		figureHeight = puzzle.getHeight()/dimension;
-		counter = 0;
+		place = 0;
 		initBoard(puzzle);
 		this.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
 	}
@@ -47,10 +49,10 @@ public class Board extends JPanel{
 	 * @param puzzle
 	 */
 	private void initBoard(BufferedImage puzzle) {
-		for(int i=0; i<dimension; i++){
-			for(int j=0; j<dimension; j++){
-				counter++;
-				boardDS.add(new Cell(i, j, new Figure(i, j, i, j, dimension, counter, new ImageIcon(puzzle.getSubimage(x, y, figureWidth, figureHeight)))));	
+		for(int i=0;  i< dimension; i++){
+			for(int j=0; j < dimension; j++){
+				place++;
+				boardDS.add(new Cell(i, j, place, new Figure(i, j, i, j, dimension, place, new ImageIcon(puzzle.getSubimage(x, y, figureWidth, figureHeight)))));	
 				x += figureWidth;
 			}
 			x = 0;
@@ -58,7 +60,7 @@ public class Board extends JPanel{
 		}
 		boardShuffle();
 		remover();
-
+		place = 0;
 	}
 	/**
 	 * Shuffling the board itself and adding it to the JPanel
@@ -73,8 +75,10 @@ public class Board extends JPanel{
 				int randomIndex = randomGenerator.nextInt(boardDS.size());
 				boardDS.get(randomIndex).getFigure().setX(i);
 				boardDS.get(randomIndex).getFigure().setY(j);
-				board[i][j] = new Cell(i, j, boardDS.get(randomIndex).getFigure());
+				boardDS.get(randomIndex).getFigure().setPlaec(place);
+				board[i][j] = new Cell(i, j, place, boardDS.get(randomIndex).getFigure());
 				boardDS.remove(randomIndex);
+				place++;
 
 			}
 		}
@@ -101,9 +105,82 @@ public class Board extends JPanel{
 		this.removeAll();
 		updateBoard();
 	}
-	
+
+	public boolean move(int x, int y, Figure movingFigure) {
+		try{
+			if(board[x][y +1].getFigure() == null){ 
+				board[x][y +1] = new Cell(x,y + 1,movingFigure);
+				board[x][y] = null;
+				movingFigure.setY = y + 1;
+				removeAll();
+				updateBoard();
+				CheckAnswer();
+				Puzzle.add();
+				return true;
+
+			}
+		}catch(ArrayIndexOutOfBoundsException e){
+
+		}
+		try{
+			if(board[x + 1][y].getFigure() == null){ 
+				board[x + 1][y] = new Cell(x + 1,y,movingFigure);
+				board[x][y] = null;
+				movingFigure.setX = x + 1;
+				removeAll();
+				updateBoard();
+				CheckAnswer();
+				Puzzle.add();
+				return true;
+
+			}
+		}catch(ArrayIndexOutOfBoundsException e){
+
+		}
+		try{
+			if(board[x - 1][y].getFigure() == null){ 
+				board[x - 1][y] = new Cell(x - 1,y,movingFigure);
+				board[x][y] = null;
+				movingFigure.setX = x - 1;
+				removeAll();
+				updateBoard();
+				CheckAnswer();
+				Puzzle.add();
+				return true;
+			}
+		}catch(ArrayIndexOutOfBoundsException e){
+
+		}
+		try{
+			if(board[x][y - 1].getFigure() == null){ 
+				board[x + 1][y - 1] = new Cell(x,y - 1,movingFigure);
+				board[x][y] = null;
+				movingFigure.setY = y - 1;
+				removeAll();
+				updateBoard();
+				CheckAnswer();
+				Puzzle.add();
+				return true;
+			}
+		}catch(ArrayIndexOutOfBoundsException e){
+
+		}
+		return false;
+	}
+
+	private void CheckAnswer() {
+		for(int i = 0; i < dimension; i++){
+			for(int j = 0; j < dimension; j++){	
+				if(board[i][j].getFigure().getPlace != board[i][j].getPlaec()) {
+					isDone = false;
+					return;
+				}
+			}
+		}
+		isDone = true;
+	}
 	public void moveByKey(String string) {
-		
+
 		if(string.equals("UP")) {
 
 		}
@@ -114,7 +191,10 @@ public class Board extends JPanel{
 
 		}
 		else { // if right
-			
+
 		}
+	}
+	public int getDimesion() {
+		return this.dimension;
 	}
 }

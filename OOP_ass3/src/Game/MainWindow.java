@@ -14,7 +14,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 public class MainWindow extends JFrame implements ActionListener {
-// alex ya zin kfitz
+	
     private JButton exit;
     private JButton start_Game;
     private JPanel menu;
@@ -64,7 +64,8 @@ public class MainWindow extends JFrame implements ActionListener {
         if (e.getSource() == exit) {
             System.exit(0);
         } else {
-            //open start up window.
+        	StartPuzzle nextWindow = new StartPuzzle();
+        	this.dispose();
         }
 
     }
