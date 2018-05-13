@@ -52,7 +52,7 @@ public class StartPuzzle extends JFrame implements ActionListener
 	public StartPuzzle()
 	{
 		setTitle("Welcome");
-		setSize(400,400);
+		setSize(600,600);
 		setLocationRelativeTo(null);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		main.setLayout(new GridBagLayout());
@@ -93,14 +93,14 @@ public class StartPuzzle extends JFrame implements ActionListener
 			}
 
 		});
-
-		open_Icon = new ImageIcon("open_64.png");
+		
+		open_Icon = new ImageIcon("openIcon.png");
 		open = new JButton("Open");
 		open.setName("Open");
 		open.setIcon(open_Icon);
 		open.addActionListener(this);
 
-		play_Icon = new ImageIcon("puzzle_play2.png");
+		play_Icon = new ImageIcon("playIcon.png");
 		play = new JButton("Play");
 		play.setName("Play");
 		play.setIcon(play_Icon);  

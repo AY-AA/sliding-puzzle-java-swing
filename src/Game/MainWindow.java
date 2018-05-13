@@ -23,21 +23,22 @@ public class MainWindow extends JFrame implements ActionListener {
     public MainWindow() {
     	//-------------------------- Window Preferences
         super("Welcome");
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setSize(600	,600);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
-        background = new JLabel(new ImageIcon("MyBackground.jpg"));
-        this.setContentPane(background);
-        this.setLayout(new BorderLayout());
+        background = new JLabel(new ImageIcon("Background.jpg"));
+        setContentPane(background);
+        setLayout(new BorderLayout());
         menu = new JPanel();
         menu.setLayout(new GridBagLayout());
 
         //-------------------------- Buttons
-        ImageIcon exit_64 = new ImageIcon("exit1_64.png");
-        exit = new JButton("Exit", exit_64);
+        ImageIcon exitIcon = new ImageIcon("exitIcon.png");
+        exit = new JButton("Exit", exitIcon);
         exit.addActionListener(this);
         
-        ImageIcon puzzle1_64 = new ImageIcon("puzzle_play.png");
-        start_Game = new JButton("play",puzzle1_64);
+        ImageIcon puzzle1_64 = new ImageIcon("playMainIcon.png");
+        start_Game = new JButton("Play",puzzle1_64);
         start_Game.addActionListener(this);
         
         //-------------------------- Grid Layout preferences
@@ -64,7 +65,8 @@ public class MainWindow extends JFrame implements ActionListener {
         if (e.getSource() == exit) {
             System.exit(0);
         } else {
-        	new StartPuzzle();
+        	StartPuzzle sp = new StartPuzzle();
+        	sp.setLocationRelativeTo(this);
         	dispose();
         }
 
