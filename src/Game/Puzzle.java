@@ -65,7 +65,7 @@ public class Puzzle extends JFrame implements ActionListener, KeyListener, Prope
 		_boardsStack = new Stack();
 		_boardsStack.push(_board);
 		
-		setPreferredSize(new Dimension(450, 520));
+		setPreferredSize(new Dimension(board.getDimension() + 80, board.getDimension() + 80));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		addComponents();
 		
@@ -142,7 +142,7 @@ public class Puzzle extends JFrame implements ActionListener, KeyListener, Prope
 
 		// add items to container
 		add(_controlsToolbar, BorderLayout.NORTH);
-		add((JPanel)_board, BorderLayout.CENTER);
+		add((JPanel)_board, BorderLayout.WEST);
 		add(_infoToolbar, BorderLayout.SOUTH);
 
 	}
@@ -235,7 +235,7 @@ public class Puzzle extends JFrame implements ActionListener, KeyListener, Prope
 			_hours = 0;
 		}
 	}
-
+	
 
 	/**
 	 * a static method to handle the last clicked button (figure)

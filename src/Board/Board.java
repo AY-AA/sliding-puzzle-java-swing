@@ -3,6 +3,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Random;
@@ -19,7 +21,7 @@ import Game.Puzzle;
 import ImageHandler.ImageLoader;
 import ImageHandler.ImageResizer;
 //the new Board
-public class Board extends JPanel{
+public class Board extends JPanel implements ActionListener{
 
 	private ArrayList<Figure> boardDS; //Data Structure to hold the board.
 	private int[] positions;
@@ -67,12 +69,7 @@ public class Board extends JPanel{
 	private void initBoard(BufferedImage puzzle) {
 		int x = 0, y = 0;
 		for(int i = 0; i < n-1; i++){
-			try {
 			boardDS.add(new Figure(i+1, new ImageIcon(puzzle.getSubimage(x, y, figureWidth, figureHeight))));
-			}
-			catch(Exception e){
-				
-			}
 			if((i+1) % dimension == 0)
 			{
 				x = 0;
@@ -84,7 +81,7 @@ public class Board extends JPanel{
 			}
 		}
 		boardDS.add(null);
-		boardShuffle();
+		boardShuffle();		
 	}
 
 	/**
@@ -118,10 +115,10 @@ public class Board extends JPanel{
 			int currPos = positions[i];
 			JButton tmp = (JButton)boardDS.get(currPos);
 			if(tmp != null) {
-			this.add(tmp);
+				this.add(tmp);
 			}
 		}
-		//Puzzle.getContainer().validate();
+		validate();
 	}
 
 	public void remover(){
@@ -234,10 +231,17 @@ public class Board extends JPanel{
 		}
 		updateBoard();
 	}
+
 	public int[] getCurrBoard() {
 		return positions;
 	}
 
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		JButton button = (JButton)e.getSource();
+		Figure fig = (Figure)button;
+		move(fig);
+	}
 }
 
 
