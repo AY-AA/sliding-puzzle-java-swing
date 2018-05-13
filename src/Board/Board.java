@@ -35,18 +35,19 @@ public class Board extends JPanel{
 	 * @param puzzle
 	 */
 	public Board(int dimension, BufferedImage puzzle){
-		this.setPreferredSize(new Dimension(410, 0));
-		this.setBorder(BorderFactory.createLineBorder(Color.RED, 5));
-		this.setBackground(Color.BLACK);
+		setPreferredSize(new Dimension(410, 410));
+		setBorder(BorderFactory.createLineBorder(Color.RED, 5));
+		setBackground(Color.BLACK);
 		this.dimension = dimension;
 		boardDS = new ArrayList<Figure>();
 		positions = new int[n];
 		figureWidth = puzzle.getWidth()/dimension; //size of each button
 		figureHeight = puzzle.getHeight()/dimension;
 		initBoard(puzzle);
-		this.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
+		setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
 		isGameOver = false;
 		n = dimension*dimension;	
+		setVisible(true);
 	}
 
 	//-------------------------- Getters and Setters
@@ -186,21 +187,22 @@ public class Board extends JPanel{
 	 * moving figure using the keyboard keys by user
 	 * @param string
 	 */
-	public boolean moveByKey(String string) {
-
-		if(string.equals("UP")) {
-
-		}
-		else if(string.equals("DOWN")) {
-
-		}
-		else if(string.equals("LEFT")) {
-
-		}
-		else { // if right
-
+	public boolean moveByKey(int move) {
+		int x = findZero();
+		move = move + x;
+		if (move >= 0 && move < n)
+		{
+			switchFig(move,x);
+			return true;
 		}
 		return false;
+	}
+
+	private int findZero() {
+		for (int i = 0 ; i<n-1 ; i++)
+			if (positions[i] == 0)
+				return i;
+		return 0;
 	}
 
 	public void undo(int[] arr) {

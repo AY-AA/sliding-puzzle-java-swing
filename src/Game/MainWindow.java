@@ -56,7 +56,7 @@ public class MainWindow extends JFrame implements ActionListener {
     }
 
     public static void main(String args[]) {
-        MainWindow a = new MainWindow();
+       new MainWindow();
     }
 
     @Override
@@ -64,8 +64,8 @@ public class MainWindow extends JFrame implements ActionListener {
         if (e.getSource() == exit) {
             System.exit(0);
         } else {
-        	StartPuzzle nextWindow = new StartPuzzle();
-        	this.dispose();
+        	new StartPuzzle();
+        	dispose();
         }
 
     }

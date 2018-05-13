@@ -64,15 +64,15 @@ public class Puzzle extends JFrame implements ActionListener, KeyListener, Prope
 		_boardDimension = _board.getDimension();
 		_boardsStack = new Stack();
 		_boardsStack.push(_board);
-
+		setPreferredSize(new Dimension(600, 600));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		addComponents();
-
+		
 		resetTimer();
 		_timer = new Timer(1000,this);
 		_timer.start();
 
-		setResizable(false);
+		//setResizable(false);
 		pack();
 		setVisible(true);		
 	}

@@ -32,6 +32,7 @@ import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.Timer;
 
+import Board.*;
 import ImageHandler.ImageResizer;
 
 import javax.swing.JFrame;
@@ -140,6 +141,9 @@ public class StartPuzzle extends JFrame implements ActionListener
 		if(button.getName().equals("Play")){
 			String N = nxn.getText();
 			puzzle_Size = getBoardSize(N);
+			Board board = new Board (puzzle_Size, image);
+			new Puzzle (board);
+			dispose();
 			}
 
 		 if(button.getName().equals("Open")) {
@@ -161,7 +165,7 @@ public class StartPuzzle extends JFrame implements ActionListener
 				BufferedImage puzzelImage = ImageResizer.resizeImage(image, 400, 400);
 				BufferedImage miniImage = ImageResizer.resizeImage(image, 200, 200);
 				//creating puzzle
-				this.dispose();
+				
 		 }
 	}
 
