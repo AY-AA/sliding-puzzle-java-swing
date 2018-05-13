@@ -395,6 +395,7 @@ public class Puzzle extends JFrame implements ActionListener, KeyListener, Prope
 		}
 	} 
 	@Override
+	
 	public void keyReleased(KeyEvent arg0) {
 		// TODO Auto-generated method stub
 

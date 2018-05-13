@@ -220,11 +220,6 @@ public class Board extends JPanel{
 		return positions;
 	}
 	
-	public static void main(String args[]) {
-		BufferedImage img = ImageLoader.loadImage("MyBackground.jpg");
-		BufferedImage puzzelImage = ImageResizer.resizeImage(img, 400, 400);
-		Board b = new Board(3,puzzelImage);
-		}
 }
 
 
