@@ -10,6 +10,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Image;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
@@ -39,27 +40,68 @@ import javax.swing.JFrame;
 
 public class StartPuzzle extends JFrame implements ActionListener
 {
-	private JPanel main = new JPanel();
 	private JButton open,play;
 	private JFileChooser fileChooser;
 	private BufferedImage image = null;
-	private JLabel puzzleImage = new JLabel("Select an image and difficulty level");
+	private JLabel puzzleLabel;
 	private JTextField nxn;
 	private GridBagConstraints gbc = new GridBagConstraints();
 	private ImageIcon open_Icon,play_Icon;
 	private int puzzle_Size = 0;
-
+    private ImagePanel menu;
+    
 	public StartPuzzle()
 	{
-		setTitle("Welcome");
-		setSize(600,600);
-		setLocationRelativeTo(null);
+        super("Sliding Puzzle");
+        setSize(400	,400);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        
+        initiateWindow();
+        setResizable(false);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		main.setLayout(new GridBagLayout());
-		//gbc.anchor = GridBagConstraints.LINE_END;
 
+//        pack();
+        setVisible(true);
+	}
 
-		//============= Buttons and Text
+	private void initiateWindow() 
+	{
+		GridBagConstraints gbc = new GridBagConstraints();
+
+        final Insets insets = new Insets(10, 10, 10,10);
+        gbc.insets = insets;
+
+        menu = new ImagePanel();
+        menu.setSize(400,600);
+        
+		// Buttons and Text addition to gridbag
+        puzzleLabel = new JLabel("Select an image and difficulty level");
+        gbc.gridx=0;
+        gbc.gridy=0;
+        gbc.anchor = GridBagConstraints.LINE_START;
+		menu.add(puzzleLabel,gbc);
+		
+		open_Icon = new ImageIcon("openIcon.png");
+		open = new JButton("Open");
+		open.setName("Open");
+		open.setIcon(open_Icon);
+		open.addActionListener(this);
+		open.setMaximumSize(new Dimension (20, 20));
+		
+		$$GRID MAX 
+		gbc.gridx = 1;
+		gbc.gridy = 0;
+        menu.add(open, gbc);
+        
+		play_Icon = new ImageIcon("playIcon.png");
+		play = new JButton("Play");
+		play.setName("Play");
+		play.setIcon(play_Icon);  
+		play.addActionListener(this);
+		gbc.gridx = 1;
+		gbc.gridy =1;
+        menu.add(play, gbc);
+		
 		nxn = new JTextField("Select size");
 		nxn.addActionListener(this);
 		nxn.addMouseListener(new MouseListener()
@@ -68,13 +110,11 @@ public class StartPuzzle extends JFrame implements ActionListener
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				nxn.setText("");
-				nxn.setSize(80,20);
 			}
 
 			@Override
 			public void mousePressed(MouseEvent e) {
 				nxn.setText("");
-				nxn.setSize(80,20);
 			}
 			@Override
 			public void mouseReleased(MouseEvent e) {
@@ -93,36 +133,19 @@ public class StartPuzzle extends JFrame implements ActionListener
 			}
 
 		});
-		
-		open_Icon = new ImageIcon("openIcon.png");
-		open = new JButton("Open");
-		open.setName("Open");
-		open.setIcon(open_Icon);
-		open.addActionListener(this);
-
-		play_Icon = new ImageIcon("playIcon.png");
-		play = new JButton("Play");
-		play.setName("Play");
-		play.setIcon(play_Icon);  
-		play.addActionListener(this);
-
-		//============= adding to JPanel main
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		main.add(open, gbc);
-
-		gbc.gridx = 0;
-		gbc.gridy = 1;
-		main.add(play, gbc);
-
-		gbc.gridx = 0;
+		gbc.gridx = 1;
 		gbc.gridy = 2;
-		main.add(nxn, gbc);
-
-		add(main);
-		//pack();
-		setVisible(true);
-
+        menu.add(nxn, gbc);
+        		
+        add(menu);
+        
+        // game icon
+        Image icon;
+        try {                
+        	icon = ImageIO.read(new File("icon.png"));
+            setIconImage(icon);
+         } catch (IOException ex) {}
+       	
 	}
 
 	//============= Getters and Setters
