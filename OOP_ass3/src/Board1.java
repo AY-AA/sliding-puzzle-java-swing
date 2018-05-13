@@ -17,14 +17,15 @@ import Game.Puzzle;
 
 public class Board1 extends JPanel{
 
-	private ArrayList<Cell> boardDS; //Data Structure to hold the board.
-	private int[][] positions;
+	private ArrayList<Figure> boardDS; //Data Structure to hold the board.
+	private int[] positions;
 	public final int dimension;
 	private int x, y;
 	private final int figureWidth, figureHeight;
 	private JLabel label;
 	private int place;
-	private boolean isDone;
+	private boolean isGameOver;
+	private int n;
 
 	/**
 	 * Constructor, receiving the image of the puzzle and the dimension of the board
@@ -36,22 +37,21 @@ public class Board1 extends JPanel{
 		this.setBorder(BorderFactory.createLineBorder(Color.RED, 5));
 		this.setBackground(Color.BLACK);
 		this.dimension = dimension;
-		boardDS = new ArrayList<Cell>();
-		positions = new int[dimension][dimension];
+		boardDS = new ArrayList<Figure>();
+		positions = new int[n];
 		x = 0;
 		y = 0;
 		figureWidth = puzzle.getWidth()/dimension; //size of each button
 		figureHeight = puzzle.getHeight()/dimension;
-		place = 0;
 		initBoard(puzzle);
 		this.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
-		isDone = false;
-		
+		isGameOver = false;
+		n = dimension*dimension;	
 	}
 	
 	//-------------------------- Getters and Setters
-	public boolean isDone() {
-		return this.isDone;
+	public boolean isGameOver() {
+		return this.isGameOver;
 	}
 	public int getDimension() {
 		return this.dimension;
@@ -59,22 +59,21 @@ public class Board1 extends JPanel{
 	//--------------------------
 	
 	/**
-	 * Initiating the board data structure in order to create from it the board it self
+	 * Initiating the board data structure in order to create from it the board itself
 	 * @param puzzle
 	 */
 	private void initBoard(BufferedImage puzzle) {
-		for(int i=0;  i< dimension; i++){
-			for(int j=0; j < dimension; j++){
-				place++;
-				boardDS.add(new Cell(i, j, place, new Figure(i, j, i, j, dimension, place, new ImageIcon(puzzle.getSubimage(x, y, figureWidth, figureHeight)))));	
+			for(int j=1; j < n-1; j++){
+				boardDS.add(new Figure(dimension, j, j, new ImageIcon(puzzle.getSubimage(x, y, figureWidth, figureHeight))));
 				x += figureWidth;
+				if(j % dimension == 1)
+				{
+					y += figureHeight;
+				}
 			}
-			x = 0;
-			y += figureHeight;
-		}
+			
 		boardShuffle();
 		remover();
-		place = 0;
 	}
 	
 	/**
@@ -83,14 +82,12 @@ public class Board1 extends JPanel{
 	public void boardShuffle(){
 
 		Random randomGenerator = new Random();
-		ArrayList<Cell> hardCopy = new ArrayList<Cell>(boardDS);
-
-		for(int i = 0; i < dimension; i++){
-			for(int j = 0; j < dimension; j++){	
+		ArrayList<Figure> hardCopy = new ArrayList<Figure>(boardDS);
+		
+		for(int i = 0; i < n; i++){
 				int randomIndex = randomGenerator.nextInt(boardDS.size());
-				positions[i][j] = boardDS.get(randomIndex).getFigure().getCellNumber();
+				positions[i] = boardDS.get(randomIndex).getCurrentIndex();
 				boardDS.remove(randomIndex);
-			}
 		}
 		boardDS = hardCopy;
 		remover();
@@ -100,13 +97,10 @@ public class Board1 extends JPanel{
 	 * Updating the board each move by user
 	 */
 	public void updateBoard(){
-
-		for(int i = 0; i < dimension; i++){
-			for(int j = 0; j < dimension; j++){	
-				int currPos = positions[i][j];
-				Figure tmp = boardDS.get(currPos).getFigure();
+		for(int i = 0; i < n; i++){
+				int currPos = positions[i];
+				Figure tmp = boardDS.get(currPos);
 				this.add(tmp);
-			}
 		}
 		//Puzzle.getContainer().validate();
 	}
@@ -187,15 +181,13 @@ public class Board1 extends JPanel{
 	 * checks if the game is done
 	 */
 	private void CheckAnswer() {
-		for(int i = 0; i < dimension; i++){
-			for(int j = 0; j < dimension; j++){	
-				if(board[i][j].getFigure().getCellNumber() != board[i][j].getPlaec()) {
-					isDone = false;
+		for(int i = 0; i < n - 1; i++){
+				if(positions[i] != i+1) {
+					isGameOver = false;
 					return;
-				}
 			}
 		}
-		isDone = true;
+		isGameOver = true;
 	}
 	
 	/**
@@ -219,10 +211,10 @@ public class Board1 extends JPanel{
 		return false;
 	}
 	
-	public Board duplicateBoard() {
-		return null;
-	}
-	public static void main
+//	public Board duplicateBoard() {
+//		return null;
+//	}
+	//public static void main
 }
 
 
