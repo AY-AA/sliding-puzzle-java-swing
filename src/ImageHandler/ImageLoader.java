@@ -1,6 +1,7 @@
 package ImageHandler;
 
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
 
@@ -15,7 +16,8 @@ public class ImageLoader
 	{
 		try 
 		{
-			return ImageIO.read(ImageLoader.class.getResource(path));
+			//return ImageIO.read(ImageLoader.class.getResource(path)); //this isnt working and i have fucking no idea why hahaha
+			return ImageIO.read(new File(path)); //this is working
 		}
 		catch (IOException e) {
 			e.printStackTrace();
