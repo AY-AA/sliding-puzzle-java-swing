@@ -7,26 +7,24 @@ import java.awt.event.ActionEvent;
 
 public class Figure extends JButton implements ActionListener
 {
-	private final int _dimension;
 //	private final int _xSolution;		
 //	private final int _ySolution;		
 //	
 //	private int _xPosition;				//current x position
 //	private int _yPosition;				//current y position
 	
-	private final int _cellNumber;
+	private final int _solCell;
 	private boolean _inSolution;
 	private int _currentIndex;
 	
-	public Figure(int dim, int cell, ImageIcon figure, int index) 
+	public Figure(int index ,ImageIcon figure) 
 	{
 //		_xSolution=solX;
 //		_ySolution=solY;
 //		_xPosition = x;
 //		_yPosition = y;
 		_currentIndex = index;
-		_dimension = dim;
-		_cellNumber = cell;
+		_solCell = index;
 		setIcon(figure);
 		addActionListener(this);
 //		checkPosition();
@@ -56,14 +54,10 @@ public class Figure extends JButton implements ActionListener
 	{
 		return _inSolution;
 	}
-	public int getCellNumber()
+	public int getSolCell()
 	{
-		return _cellNumber;
+		return _solCell;
 	}	
-	public int getDimension()
-	{
-		return _dimension;
-	}
 	public int getCurrentIndex()
 	{
 		return _currentIndex;
@@ -112,6 +106,7 @@ public class Figure extends JButton implements ActionListener
 //	{
 //		_cellNumber = c;
 //	}
+
 	
 	
 	
