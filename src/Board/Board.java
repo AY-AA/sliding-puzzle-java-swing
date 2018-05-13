@@ -215,7 +215,7 @@ public class Board extends JPanel{
 		updateBoard();
 	}
 	public int[] getCurrBoard() {
-		return this.positions;
+		return positions;
 	}
 	public static void main(String args[]) {
 		BufferedImage img = ImageLoader.loadImage("Images/MyBackground.jpg");

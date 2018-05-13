@@ -24,7 +24,6 @@ public class Puzzle extends JFrame implements ActionListener, KeyListener, Prope
 
 	// --- TIMER ---
 	private Timer _timer;
-	private boolean _isStopped;
 	private int _seconds = 0;
 	private int _minutes = 0;
 	private int _hours = 0;	
@@ -49,8 +48,9 @@ public class Puzzle extends JFrame implements ActionListener, KeyListener, Prope
 	private int _movesCounter;
 	private JToolBar _infoToolbar;
 
-	// --- GAME FINISHED ---
+	// --- GAME STATUS ---
 	private boolean _isFinished;
+	private boolean _isStopped;
 
 	// --- CONSTRUCTOR ---
 	/**
@@ -325,14 +325,16 @@ public class Puzzle extends JFrame implements ActionListener, KeyListener, Prope
 	public void propertyChange(PropertyChangeEvent prop)
 	{
 		if (prop.getSource().equals(_lastPressed))
+		{
 			if (_board.move(_lastPressed))
 				updateBoardStack();	
-			else if (prop.getSource().equals(_seconds))
-				_secondsLabel.setText(String.format("%02d", _seconds));
-			else if (prop.getSource().equals(_minutes))
-				_minutesLabel.setText(String.format("%02d", _minutes) + ":");
-			else if (prop.getSource().equals(_hours))
-				_hoursLabel.setText(String.format("%02d", _hours) + ":");		
+		}
+		else if (prop.getSource().equals(_seconds))
+			_secondsLabel.setText(String.format("%02d", _seconds));
+		else if (prop.getSource().equals(_minutes))
+			_minutesLabel.setText(String.format("%02d", _minutes) + ":");
+		else if (prop.getSource().equals(_hours))
+			_hoursLabel.setText(String.format("%02d", _hours) + ":");		
 	}
 	@Override
 	public void keyPressed(KeyEvent e) 
@@ -341,6 +343,7 @@ public class Puzzle extends JFrame implements ActionListener, KeyListener, Prope
 		if (_isFinished)
 		{
 			alert("play again");
+			return;
 		}
 		if (_isStopped)
 		{
@@ -349,41 +352,42 @@ public class Puzzle extends JFrame implements ActionListener, KeyListener, Prope
 		}
 		if (keyCode == KeyEvent.VK_SPACE)
 		{
-			_isStopped = !_isStopped;
+			changePauseStartButton();
+			resetTimer();
 			return;
 		}
 
 		switch( keyCode ) 
 		{ 
-		case KeyEvent.VK_UP:
+		case KeyEvent.VK_UP:			//move up
 		{
-			if (_board.moveByKey("UP"))
+			if (_board.moveByKey(_boardDimension))
 				updateBoardStack(); 
 
 		}
 		break;
-		case KeyEvent.VK_DOWN:
+		case KeyEvent.VK_DOWN:			//move down
 		{
-			if (_board.moveByKey("DOWN"))
+			if (_board.moveByKey(-1 * _boardDimension))
 				updateBoardStack(); 
 			else
 				alert("paused");
 		}
 		break;
-		case KeyEvent.VK_LEFT:
+		case KeyEvent.VK_LEFT:			//move left
 		{
-			if (_board.moveByKey("LEFT"))
+			if (_board.moveByKey(1))
 				updateBoardStack(); 
 
 		}
 		break;
-		case KeyEvent.VK_RIGHT :
+		case KeyEvent.VK_RIGHT :		//move right
 		{
-			if (_board.moveByKey("RIGHT"))
+			if (_board.moveByKey(-1))
 				updateBoardStack(); 
 		}
 		break;
-		case KeyEvent.VK_Z:
+		case KeyEvent.VK_Z:				//undo
 		{
 			if ((e.getModifiers() & KeyEvent.CTRL_MASK) != 0)   //ctrl+z
 				undo();
