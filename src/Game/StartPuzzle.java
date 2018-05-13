@@ -26,6 +26,7 @@ import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
@@ -93,7 +94,7 @@ public class StartPuzzle extends JFrame implements ActionListener
 			}
 
 		});
-		
+
 		open_Icon = new ImageIcon("openIcon.png");
 		open = new JButton("Open");
 		open.setName("Open");
@@ -130,43 +131,37 @@ public class StartPuzzle extends JFrame implements ActionListener
 		return puzzle_Size;
 	}
 
-	public static void main(String[] args) {
-		StartPuzzle sp = new StartPuzzle();
-	}
-
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		
 		JButton button = (JButton)e.getSource();
-		if(button.getName().equals("Play")){
+		if(button.getName().equals("Play")){ //if play button was pressed
 			String N = nxn.getText();
 			puzzle_Size = getBoardSize(N);
-			Board board = new Board (puzzle_Size, image);
-			new Puzzle (board);
-			dispose();
+			if(image != null) {
+				BufferedImage puzzelImage = ImageResizer.resizeImage(image, 400, 400);
+				Board board = new Board (3, puzzelImage);
+				new Puzzle (board);	
+				dispose();
 			}
+			else {
+				JOptionPane.showMessageDialog(null,"You must first choose a photo");
+			}
+		}
 
-		 if(button.getName().equals("Open")) {
-			
+		if(button.getName().equals("Open")) { //if open button was pressed
 			fileChooser = new JFileChooser();
 			int action = fileChooser.showOpenDialog(null);
 			if(action == JFileChooser.APPROVE_OPTION){
 				File file = fileChooser.getSelectedFile();
 				try {
 					image = ImageIO.read(file);
-					open.setIcon(new ImageIcon(image.getScaledInstance(250, 250, Image.SCALE_DEFAULT)));
+					open.setIcon(new ImageIcon(image.getScaledInstance(open.getWidth(), open.getHeight(), Image.SCALE_DEFAULT)));
 
 				} catch (IOException e1) {
-					System.out.println("You must select an image");
+					JOptionPane.showMessageDialog(null,"You must first choose a photo");
 				}
 			}
 		}
-		 if(image != null) {
-				BufferedImage puzzelImage = ImageResizer.resizeImage(image, 400, 400);
-				BufferedImage miniImage = ImageResizer.resizeImage(image, 200, 200);
-				//creating puzzle
-				
-		 }
 	}
 
 	//============= Additional Methods

@@ -9,6 +9,7 @@ import java.util.Random;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
@@ -36,17 +37,17 @@ public class Board extends JPanel{
 	 */
 	public Board(int dimension, BufferedImage puzzle){
 		setPreferredSize(new Dimension(410, 410));
-		setBorder(BorderFactory.createLineBorder(Color.RED, 5));
-		setBackground(Color.BLACK);
+		//setBorder(BorderFactory.createLineBorder(Color.RED, 5));
+		//setBackground(Color.BLACK);
 		this.dimension = dimension;
+		n = this.dimension*this.dimension;	
 		boardDS = new ArrayList<Figure>();
 		positions = new int[n];
 		figureWidth = puzzle.getWidth()/dimension; //size of each button
 		figureHeight = puzzle.getHeight()/dimension;
-		initBoard(puzzle);
 		setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
+		initBoard(puzzle);
 		isGameOver = false;
-		n = dimension*dimension;	
 		setVisible(true);
 	}
 
@@ -65,12 +66,21 @@ public class Board extends JPanel{
 	 */
 	private void initBoard(BufferedImage puzzle) {
 		int x = 0, y = 0;
-		for(int j=0; j < n-1; j++){
-			boardDS.add(new Figure(j+1, new ImageIcon(puzzle.getSubimage(x, y, figureWidth, figureHeight))));
-			x += figureWidth;
-			if(j+1 % dimension == 0)
+		for(int i = 0; i < n-1; i++){
+			try {
+			boardDS.add(new Figure(i+1, new ImageIcon(puzzle.getSubimage(x, y, figureWidth, figureHeight))));
+			}
+			catch(Exception e){
+				
+			}
+			if((i+1) % dimension == 0)
 			{
+				x = 0;
 				y += figureHeight;
+			}
+			else 
+			{
+				x += figureWidth;
 			}
 		}
 		boardDS.add(null);
@@ -87,7 +97,13 @@ public class Board extends JPanel{
 
 		for(int i = 0; i < n; i++){
 			int randomIndex = randomGenerator.nextInt(boardDS.size());
-			positions[i] = boardDS.get(randomIndex).getCurrentIndex();
+			Figure tmpFig = boardDS.get(randomIndex);
+			if(tmpFig == null) {
+				positions[i] = 0;
+			}
+			else {
+				positions[i] = boardDS.get(randomIndex).getCurrentIndex();
+			}
 			boardDS.remove(randomIndex);
 		}
 		boardDS = hardCopy;
@@ -100,8 +116,10 @@ public class Board extends JPanel{
 	public void updateBoard(){
 		for(int i = 0; i < n; i++){
 			int currPos = positions[i];
-			Figure tmp = boardDS.get(currPos);
+			JButton tmp = (JButton)boardDS.get(currPos);
+			if(tmp != null) {
 			this.add(tmp);
+			}
 		}
 		//Puzzle.getContainer().validate();
 	}
@@ -219,7 +237,7 @@ public class Board extends JPanel{
 	public int[] getCurrBoard() {
 		return positions;
 	}
-	
+
 }
 
 
