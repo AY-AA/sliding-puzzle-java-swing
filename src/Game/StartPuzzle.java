@@ -139,7 +139,7 @@ public class StartPuzzle extends JFrame implements ActionListener
 			puzzle_Size = getBoardSize(N);
 			if(image != null) {
 				BufferedImage puzzelImage = ImageResizer.resizeImage(image, 400, 400);
-				Board board = new Board (3, puzzelImage);
+				Board board = new Board (5, puzzelImage);
 				new Puzzle (board);	
 				dispose();
 			}
