@@ -74,7 +74,7 @@ public class Puzzle extends JFrame implements ActionListener, KeyListener, Prope
 		_timer.start();
 
 		//setResizable(false);
-		pack();
+		//pack();
 		setVisible(true);		
 	}
 	/**
@@ -337,6 +337,7 @@ public class Puzzle extends JFrame implements ActionListener, KeyListener, Prope
 		else if (prop.getSource().equals(_hours))
 			_hoursLabel.setText(String.format("%02d", _hours) + ":");		
 	}
+	
 	@Override
 	public void keyPressed(KeyEvent e) 
 	{
