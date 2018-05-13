@@ -69,7 +69,7 @@ public class StartPuzzle extends JFrame implements ActionListener
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				nxn.setText("");
-				nxn.setSize(80,20);
+				nxn.setSize(100,20);
 			}
 
 			@Override
