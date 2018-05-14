@@ -15,14 +15,4 @@ public class ImageResizer
        g.dispose();
        return resizedImage;
     }
-//	public  static BufferedImage resizeImage(BufferedImage image) 
-//	{
-//       int type = 0;
-//       type = image.getType() == 0? BufferedImage.TYPE_INT_ARGB : image.getType();
-//       BufferedImage resizedImage = new BufferedImage(400, 400,type);
-//       Graphics2D g = resizedImage.createGraphics();
-//       g.drawImage(image, 0, 0, 400, 400, null);
-//       g.dispose();
-//       return resizedImage;
-//    }
 }

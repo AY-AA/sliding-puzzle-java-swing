@@ -1,42 +1,40 @@
 package Board;
  
 import javax.swing.*;
-import Game.PuzzleWindow;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 
-public class Figure extends JButton implements ActionListener
+public class Figure extends JButton
 {
 
 	private final int _solCell;
-	private int _currentIndex;
+	private int _currentCell;
 	
 	public Figure(int index ,ImageIcon figure) 
 	{
-		_currentIndex = index;
+		_currentCell = index;
 		_solCell = index;
-		setIcon(figure);
-		addActionListener(this);
+		this.setBorderPainted(false);
+		this.setIcon(figure);
 	}
 	
-	@Override
-	public void actionPerformed(ActionEvent e)
-	{
-		PuzzleWindow.figurePressed(this);				//whenever the figure is pressed, puzzle is getting an update
-	}
+//	@Override
+//	public void actionPerformed(ActionEvent e)
+//	{
+//		PuzzleWindow.figurePressed(this);				//whenever the figure is pressed, puzzle is getting an update
+//	}
 	
 	/**
 	 * changes the current figure position
 	 */
 	public void setCurrentIndex(int index)
 	{
-		_currentIndex = index;
+		_currentCell = index;
 	}
 	
 	// -------------------------- GETTERS -------------------------- //
 	
 	public int getCurrentIndex()
 	{
-		return _currentIndex;
+		return _currentCell;
 	}
+
 }

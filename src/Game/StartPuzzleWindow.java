@@ -199,6 +199,7 @@ public class StartPuzzleWindow extends Window implements ActionListener
 
 		add(_panel);			//add JPanel to window
 	}
+	
 	@Override
 	public void actionPerformed(ActionEvent e)
 	{
@@ -254,11 +255,11 @@ public class StartPuzzleWindow extends Window implements ActionListener
 	 * creates a new sliding puzzle game
 	 */
 	private void play() {
-		_puzzleImage = ImageResizer.resizeImage(_puzzleImage, 400, 400);
-		_openButton.setIcon( new ImageIcon(_puzzleImage.getScaledInstance(250, 250, Image.SCALE_DEFAULT)));		
-
-		Board board = new Board (_puzzleSize, _puzzleImage);
-		PuzzleWindow p = new PuzzleWindow (board);
+		_puzzleImage = ImageResizer.resizeImage(_puzzleImage, 700, 700);
+//		_openButton.setIcon( new ImageIcon(_puzzleImage.getScaledInstance(250, 250, Image.SCALE_DEFAULT)));		
+		
+//		Board board = new Board (_puzzleSize, _puzzleImage);
+		PuzzleWindow p = new PuzzleWindow (_puzzleSize, _puzzleImage);
 		p.setLocationRelativeTo(this);
 		dispose();
 	}

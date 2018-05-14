@@ -4,13 +4,16 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import Board.*;
 import java.awt.image.BufferedImage;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Stack;
+import java.util.Random;
 
+import Board.*;
+import Stack.*;
+
+import javax.imageio.ImageIO;
 import javax.swing.*;
 
 
@@ -37,7 +40,7 @@ public class PuzzleWindow extends Window implements ActionListener, KeyListener
 	private ImageIcon _stopIcon, _startIcon, _undoIcon, _changeImageIcon, _menuIcon, _playAgainIcon;	
 
 	// --- PUZZLE SCREEN ---
-	private Board _board;
+	//	private Board _board;
 	private int _boardDimension = 0;
 
 	// --- FOOTER INFO ---
@@ -52,21 +55,36 @@ public class PuzzleWindow extends Window implements ActionListener, KeyListener
 	private boolean _isFinished;
 	private boolean _isStopped;
 
+	///////
+	JPanel _board;
+	private int _dimension;
+	private int _n;
+	private JLabel  _emptyFigure;
+	private ArrayList<Figure> _boardDS; //Data Structure to hold the board.
+	private boolean _isGameOver;
+	private int[] _positions;
+
+
 	// --- CONSTRUCTOR ---
 	/**
 	 * Puzzle object constructor, creates a new windows and adds components using addComponents method
 	 * @param board is the sliding puzzle game component
 	 */
-	public PuzzleWindow (Board board)
+	public PuzzleWindow (int puzzleSize, BufferedImage puzzleImage)
 	{
 		super();
-		_board = board;
-		_boardDimension = _board.getDimension();
+		createBoard(puzzleSize, puzzleImage);
+		//		_board = new Board();
+		//		_boardDimension = _board.getDimension();
 		_boardsStack = new Stack();
-		_boardsStack.push(_board);
-		
+		_boardsStack.push(_currentBoard);
+		addKeyListener(this);
+		setFocusable(true);
 
-		setPreferredSize(new Dimension(450, 520));
+
+		int x = _n;
+		int y = _n + 80;
+		setPreferredSize(new Dimension(x,y));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		loadImages();
 		initiateWindow();
@@ -76,19 +94,27 @@ public class PuzzleWindow extends Window implements ActionListener, KeyListener
 		_timer.start();
 
 		//setResizable(false);
-		pack();
+		//		pack();
 		setVisible(true);		
 	}
+
 	protected void loadImages()
 	{
-		// set icons
-		_stopIcon = new ImageIcon("Images/stopIcon.png"); 
-		_startIcon = new ImageIcon("Images/startIcon.png"); 
-		_undoIcon = new ImageIcon("Images/undoIcon.png"); 
-		_changeImageIcon = new ImageIcon("Images/changeImageIcon.png"); 
-		_menuIcon = new ImageIcon("Images/menuIcon.png"); 
-		_playAgainIcon = new ImageIcon ("Images/playAgainIcon.png");
+		try {
+			// set icons
+			_stopIcon = new ImageIcon("Images/stopIcon.png"); 
+			_startIcon = new ImageIcon("Images/startIcon.png"); 
+			_undoIcon = new ImageIcon("Images/undoIcon.png"); 
+			_changeImageIcon = new ImageIcon("Images/changeImageIcon.png"); 
+			_menuIcon = new ImageIcon("Images/menuIcon.png"); 
+			_playAgainIcon = new ImageIcon ("Images/playAgainIcon.png");
+			Image icon = ImageIO.read(new File("Images/icon.png"));
+			setIconImage(icon);
+		} catch (IOException e1) {
+			System.out.println("error: could not load images in PuzzleWindow screen");
+		}
 	}
+
 	protected void initiateWindow()
 	{
 		// initialize header toolbar items
@@ -109,7 +135,6 @@ public class PuzzleWindow extends Window implements ActionListener, KeyListener
 		_menuButton = new JButton("Menu");
 		_menuButton.setIcon(_menuIcon);
 		_menuButton.addActionListener(this);
-
 
 		// add items to toolbar
 		_controlsToolbar = new JToolBar();
@@ -148,6 +173,246 @@ public class PuzzleWindow extends Window implements ActionListener, KeyListener
 
 	}
 
+	private void createBoard(int puzzleSize, BufferedImage puzzleImage) 
+	{
+		_board = new JPanel();
+		int figureWidth = puzzleImage.getWidth() / puzzleSize; //size of each button
+		int figureHeight = puzzleImage.getHeight() / puzzleSize;
+		_emptyFigure = new JLabel();
+		_emptyFigure.setPreferredSize(new Dimension(figureWidth, figureHeight));
+		_emptyFigure.setOpaque(true);
+		_emptyFigure.setBackground(Color.BLACK);
+		_dimension = puzzleSize;
+		int boardSize = figureWidth* _dimension;
+		_n = _dimension * _dimension;
+		setSize(boardSize, boardSize);
+		_boardDS = new ArrayList<Figure>();
+		_currentBoard = new int[_n];
+		_positions = new int [_n];
+		_board.setLayout(new GridLayout(_dimension, _dimension, 1, 1));
+		initBoard(puzzleImage,figureWidth,figureHeight);
+		_isGameOver = false;
+		setVisible(true);
+
+	}
+	/**
+	 * Initiating the board data structure in order to create from it the board itself
+	 *
+	 * @param puzzle
+	 */
+	private void initBoard(BufferedImage puzzleImage, int figureWidth, int figureHeight)
+	{
+
+		int x = 0, y = 0;
+		for (int i = 0; i < _n - 1; i++) {
+			ImageIcon _imgToAdd = new ImageIcon(puzzleImage.getSubimage(x, y, figureWidth, figureHeight));
+			Figure _figToAdd = new Figure(i + 1, _imgToAdd);
+			_figToAdd.addActionListener(this);
+			_boardDS.add(_figToAdd);
+			if ((i + 1) % _dimension == 0) {
+				x = 0;
+				y += figureHeight;
+			} else {
+				x += figureWidth;
+			}
+		}
+		_boardDS.add(null);
+		boardShuffle();
+	}
+	/**
+	 * Shuffling the board itself and adding it to the JPanel
+	 */
+	public void boardShuffle() {
+
+		Random randomGenerator = new Random();
+		ArrayList<Figure> hardCopy = new ArrayList<Figure>(_boardDS);
+
+		for (int i = 0; i < _n; i++) {
+			int randomIndex = randomGenerator.nextInt(_boardDS.size());
+			Figure tmpFig = _boardDS.get(randomIndex);
+			if (tmpFig == null) 
+			{
+				_positions[i] = 0;
+			} 
+			else 
+			{
+				_positions[i] = _boardDS.get(randomIndex).getCurrentIndex();
+				tmpFig.setCurrentIndex(i + 1);
+			}
+			_boardDS.remove(randomIndex);
+		}
+		_boardDS = hardCopy;
+		remover();
+	}
+
+	public void remover() 
+	{
+		_board.removeAll();
+		updateBoard();
+	}
+
+	/**
+	 * Updating the board each move by user
+	 */
+	public void updateBoard() {
+		for (int i = 0; i < _n; i++) {
+			int currPos = _positions[i];
+			if (currPos != 0) {
+				Figure tmp = _boardDS.get(currPos - 1);
+				_board.add(tmp);
+			}
+			else {
+				_board.add(_emptyFigure);
+			}
+		}
+	}
+
+
+
+	private void switchFig(int a, int b) {
+		int temp = _positions[a];
+		_positions[a] = _positions[b];
+		_positions[b] = temp;
+
+		//		
+		//		Figure figure1 = _boardDS.get(_positions[a]);
+		//		Figure figure2 = _boardDS.get(_positions[b]);
+		//		int figure1Index = figure1.getCurrentIndex();
+		//		int figure2Index = figure2.getCurrentIndex();
+		//		figure1.setCurrentIndex(figure2Index);
+		//		figure2.setCurrentIndex(figure1Index);
+
+
+	}
+
+	/**
+	 * moving figure on the board if the move is legal
+	 *
+	 * @param movingFigure
+	 * @return
+	 */
+	public boolean move(Figure movingFigure) {
+		int toChange = movingFigure.getCurrentIndex() - 1;
+		try {
+			if (_positions[toChange - _dimension] == 0) { // if up is empty
+				switchFig(toChange - _dimension, toChange);
+				movingFigure.setCurrentIndex(toChange - _dimension + 1);
+				remover();
+				checkAnswer();
+				return true;
+			}
+		} catch (ArrayIndexOutOfBoundsException e) {
+
+		}
+		try {
+			if (_positions[toChange + 1] == 0) { // if right is empty
+				switchFig(toChange + 1, toChange);
+				movingFigure.setCurrentIndex(toChange + 2);
+				remover();
+				checkAnswer();
+				return true;
+			}
+		} catch (ArrayIndexOutOfBoundsException e) {
+
+		}
+		try {
+
+			if (_positions[toChange - 1] == 0) { // if left is empty
+				switchFig(toChange - 1, toChange);
+				movingFigure.setCurrentIndex(toChange);
+				remover();
+				checkAnswer();
+				return true;
+			}
+		} catch (ArrayIndexOutOfBoundsException e) {
+
+		}
+		try {
+			if (_positions[toChange + _dimension] == 0) { // if down is empty
+				switchFig(toChange + _dimension, toChange);
+				movingFigure.setCurrentIndex(toChange + _dimension + 1);
+				remover();
+				checkAnswer();
+				return true;
+			}
+		} catch (ArrayIndexOutOfBoundsException e) {
+
+		}
+		return false;
+	}
+
+	/**
+	 * moving figure using the keyboard keys by user
+	 *
+	 * @param move
+	 */
+	public boolean moveByKey(int moving, int x) {
+		moving = moving + x;
+		if (moving >= 0 && moving < _n)
+		{
+			int movingIndex = _positions[moving] -1;
+			Figure movingFigure = _boardDS.get(movingIndex);
+			move(movingFigure);
+
+			//            switchFig(moving, x );
+			//            if(_boardDS.get(_positions[x]) != null) 
+			//                _boardDS.get(_positions[x]).setCurrentIndex(x + 1);
+			//            remover();
+			return true;
+		}
+		return false;
+
+		//		if (move >= 0 && move < _n) {
+		//			switchFig(move, x);
+		//			checkAnswer();
+		//			return true;
+		//		}
+		//		return false;
+	}
+
+	//	private boolean checkValidMove(int empty, int moving) 
+	//	{
+	//		if (empty)
+	//		
+	//		
+	//		if(pos1 < pos2) 
+	//		{
+	//            if (pos1 + 1 % _dimension == 0 && pos2 == pos1 + 1) 
+	//            {
+	//                return false;
+	//            }
+	//        }
+	//        else if(pos2 + 1 % _dimension == 0 && pos1 == pos2 + 1) 
+	//        {
+	//            return false;
+	//        }
+	//        return true;
+	//	}
+
+	private int findZero() {
+		for (int i = 0; i < _n; i++)
+			if (_positions[i] == 0)
+				return i;
+		return 0;
+	}
+
+	/**
+	 * checks if the game is done
+	 */
+	private void checkAnswer() {
+		for (int i = 0; i < _n - 1; i++) {
+			if (_positions[i] != i + 1) {
+				_isGameOver = false;
+				return;
+			}
+		}
+		_isGameOver = true;
+	}
+
+
+
+
+
 	// --- BUTTONS ---
 	/**
 	 * closes the game and goes back to image choosing window
@@ -172,24 +437,44 @@ public class PuzzleWindow extends Window implements ActionListener, KeyListener
 	 */
 	private void undo()
 	{
-		_currentBoard = (int[])_boardsStack.pop();
-		_board.undo(_currentBoard);
+		if (!_boardsStack.isEmpty())
+		{
+			_currentBoard = _boardsStack.pop();
+			undoMove(_currentBoard);
+		}
+		else
+			alert("cant undo");
 	}
+
+	public void undoMove(int[] arr) {
+		_positions = arr;
+		for (int i = 0; i < _n; i++) {
+			int x = _positions[i];
+			Figure tempFig = _boardDS.get(x);
+			if (tempFig != null) {
+				tempFig.setCurrentIndex(i + 1);
+			}
+		}
+		updateBoard();
+	}
+
 	/**
 	 * changes the start and stop icons whenever it is clicked and also stop the timer if game is paused
 	 */
 	private void changePauseStartButton()
 	{
 		_isStopped = !_isStopped;
-		if (_isStopped)
-		{
-			_stopStartButton.setIcon(_startIcon);
-			_stopStartButton.setText("Start");
-		}
-		else
+		if (!_isStopped)
 		{
 			_stopStartButton.setIcon(_stopIcon);
 			_stopStartButton.setText("Stop");
+			_timer.start();
+		}
+		else
+		{
+			_stopStartButton.setIcon(_startIcon);
+			_stopStartButton.setText("Start");
+			_timer.stop();
 		}
 	}
 	/**
@@ -197,14 +482,16 @@ public class PuzzleWindow extends Window implements ActionListener, KeyListener
 	 */
 	private void playAgain() 
 	{
+		resetTimer();
+		_timer.start();
 		_boardsStack.clear();
-		_board.boardShuffle();
-		_currentBoard = _board.getCurrBoard();
+		boardShuffle();
+		//		_currentBoard = _board.getCurrBoard();
+		//		_boardsStack.push(_currentBoard);
 		_isFinished = false;
 		_isStopped = false;
 		_stopStartButton.setIcon(_stopIcon);
 		_stopStartButton.setText("Stop");
-		resetTimer();
 	}
 
 	// --- TIMER ---
@@ -227,29 +514,17 @@ public class PuzzleWindow extends Window implements ActionListener, KeyListener
 		}		
 		_secondsLabel.setText(String.format("%02d", _seconds));
 		_minutesLabel.setText(String.format("%02d", _minutes) + ":");
-		_hoursLabel.setText(String.format("%02d", _hours) + ":");
+		_hoursLabel.setText("Total Time: " + String.format("%02d", _hours) + ":");
 	}
 	/**
 	 * resets the timer
 	 */
 	private void resetTimer()
 	{
-		if (_isStopped == false)
-		{
-			_seconds = 0;
-			_minutes = 0;
-			_hours = 0;
-		}
-	}
-
-
-	/**
-	 * a static method to handle the last clicked button (figure)
-	 * @param fig is the clicked figure the user chose
-	 */
-	public static void figurePressed(Figure fig)
-	{
-		_lastPressed = fig;
+		_seconds = 0;
+		_minutes = 0;
+		_hours = 0;
+		updateTimerLabel();
 	}
 
 	/**
@@ -259,10 +534,8 @@ public class PuzzleWindow extends Window implements ActionListener, KeyListener
 	{
 		_movesCounter++;
 		_movesCounterLabel.setText("        Total moves: "+_movesCounter);
-
-		_currentBoard = _board.getCurrBoard();
 		_boardsStack.push(_currentBoard);
-		if (_board.isGameOver())
+		if (_isGameOver)
 			finishGame();
 	}
 
@@ -271,6 +544,7 @@ public class PuzzleWindow extends Window implements ActionListener, KeyListener
 	 */
 	private void finishGame()
 	{
+		_timer.stop();
 		_isStopped = true;
 		alert("finish");
 		_stopStartButton.setIcon(_playAgainIcon);
@@ -285,19 +559,38 @@ public class PuzzleWindow extends Window implements ActionListener, KeyListener
 	{
 		switch (alert)
 		{
-		case "paused":
+		case ("paused"):
+		{
 			JOptionPane.showMessageDialog(null, "Can not make moves while game is paused,"
 					+ '\n' +  "please press play first and then make moves ", 
 					"Game is paused", JOptionPane.CANCEL_OPTION);
-		case "finish":
+			break;
+		}
+
+		case ("finish"):
+		{
 			JOptionPane.showMessageDialog(null, "GOOD JOB!" + '\n' 
 					+ "Total moves :" + _movesCounter + '\n'
 					+ "Total time :" + _hoursLabel.getText() + _minutesLabel.getText() + _secondsLabel.getText(), "Game is over", JOptionPane.CLOSED_OPTION);
-		case "play again":
+			break;
+		}
+
+		case ("play again"):
+		{
 			JOptionPane.showMessageDialog(null, "The game is finished,"
 					+ '\n' +  "please choose one of the buttons above.", "Game is over", JOptionPane.CANCEL_OPTION);				
+			break;
+		}
+
+		case ("cant undo"):
+		{
+			JOptionPane.showMessageDialog(null, "Cannot undo,"
+					+ '\n' +  "You are in the first move, cannot undo it.", "No more undos", JOptionPane.CANCEL_OPTION);				
+
+		}
 		}
 	}
+
 
 
 	// --- OVERRIDES ---	
@@ -305,20 +598,7 @@ public class PuzzleWindow extends Window implements ActionListener, KeyListener
 	public void actionPerformed(ActionEvent e)
 	{
 
-		if (_isFinished && e.getSource() == _stopStartButton)
-		{
-			playAgain();
-		}
-		else if (e.getSource() == _stopStartButton)
-		{
-			changePauseStartButton();
-			resetTimer();
-		}
-		else if (e.getSource() == _timer && !_isStopped)
-		{
-			updateTimerLabel();
-		}
-		else if (e.getSource() == _menuButton)
+		if (e.getSource() == _menuButton)
 		{
 			backToMenu();
 		}
@@ -326,71 +606,98 @@ public class PuzzleWindow extends Window implements ActionListener, KeyListener
 		{
 			backToChooseImage();
 		}
+		else if (_isFinished)
+		{
+			if (e.getSource() == _stopStartButton)
+				playAgain();
+			else
+				alert("play again");
+		}		
+		else if (_isStopped)
+		{
+			if (e.getSource() == _stopStartButton)
+				changePauseStartButton();
+			else
+				alert("paused");
+		}
+		else if ( e.getSource() instanceof Figure)
+		{
+			if (move((Figure)e.getSource()))
+				updateBoardStack();
+		}
+		else if (e.getSource() == _stopStartButton)
+		{
+			changePauseStartButton();
+		}
+		else if (e.getSource() == _timer)
+		{
+			updateTimerLabel();
+		}
 		else if (e.getSource() == _undoButton)
 		{
 			undo();
 		}
 	}
-	
+
 
 	@Override
-	public void keyPressed(KeyEvent e) 
+	public void keyPressed(KeyEvent e)
 	{
 		int keyCode = e.getKeyCode();
-		if (_isFinished)
-		{
-			alert("play again");
-			return;
-		}
-		if (_isStopped)
-		{
-			alert("paused");
-			return;
-		}
 		if (keyCode == KeyEvent.VK_SPACE)
 		{
-			changePauseStartButton();
-			resetTimer();
-			return;
-		}
-
-		switch( keyCode ) 
-		{ 
-		case KeyEvent.VK_UP:			//move up
-		{
-			if (_board.moveByKey(_boardDimension))
-				updateBoardStack(); 
-
-		}
-		break;
-		case KeyEvent.VK_DOWN:			//move down
-		{
-			if (_board.moveByKey(-1 * _boardDimension))
-				updateBoardStack(); 
+			if (_isFinished)
+				playAgain();
 			else
-				alert("paused");
+				changePauseStartButton();
 		}
-		break;
-		case KeyEvent.VK_LEFT:			//move left
+		else if (_isFinished)
 		{
-			if (_board.moveByKey(1))
-				updateBoardStack(); 
+			alert("play again");
+		}
+		else if (_isStopped)
+		{
+			alert("paused");
+		}
 
+		else {
+			int x = findZero();
+			switch( keyCode )
+			{
+			case KeyEvent.VK_UP:			//move up
+			{
+				if (x <_n- _dimension && moveByKey(_dimension,x))
+					updateBoardStack();
+
+			}
+			break;
+			case KeyEvent.VK_DOWN:			//move down
+			{
+				if (x >= _dimension && moveByKey(-1 * _dimension,x))
+					updateBoardStack();
+			}
+			break;
+			case KeyEvent.VK_LEFT:			//move left
+			{
+				if (!(x % _dimension == _dimension-1) && moveByKey(1,x))
+					updateBoardStack();
+
+			}
+			break;
+			case KeyEvent.VK_RIGHT :		//move right
+			{
+				if (!(x % _dimension == 0) && moveByKey(-1,x))
+					updateBoardStack();
+			}
+			break;
+			case KeyEvent.VK_Z:				//undo
+			{
+				if ((e.getModifiers() & KeyEvent.CTRL_MASK) != 0)   //ctrl+z
+					undo();
+			}
+			}
 		}
-		break;
-		case KeyEvent.VK_RIGHT :		//move right
-		{
-			if (_board.moveByKey(-1))
-				updateBoardStack(); 
-		}
-		break;
-		case KeyEvent.VK_Z:				//undo
-		{
-			if ((e.getModifiers() & KeyEvent.CTRL_MASK) != 0)   //ctrl+z
-				undo();
-		}
-		}
-	} 
+	}
 	@Override
 
 	public void keyReleased(KeyEvent arg0) {

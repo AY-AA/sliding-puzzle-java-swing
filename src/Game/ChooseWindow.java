@@ -21,7 +21,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 
-import Board.Board;
+import Board.*;
 import ImageHandler.ImageResizer;
 
 public class ChooseWindow extends Window implements ActionListener{
@@ -174,8 +174,9 @@ public class ChooseWindow extends Window implements ActionListener{
 		
 	}
 	private void play() {
-		Board board = new Board (_puzzleSize, _puzzleImage);
-		PuzzleWindow p = new PuzzleWindow (board);
+		
+//		Board board = new Board (_puzzleSize, _puzzleImage);
+		PuzzleWindow p = new PuzzleWindow (_puzzleSize, _puzzleImage);
 		p.setLocationRelativeTo(this);
 		dispose();
 		_backWindow.dispose();
