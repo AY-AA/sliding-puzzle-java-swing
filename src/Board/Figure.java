@@ -1,7 +1,7 @@
 package Board;
  
 import javax.swing.*;
-import Game.Puzzle;
+import Game.PuzzleWindow;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
@@ -22,7 +22,7 @@ public class Figure extends JButton implements ActionListener
 	@Override
 	public void actionPerformed(ActionEvent e)
 	{
-		Puzzle.figurePressed(this);				//whenever the figure is pressed, puzzle is getting an update
+		PuzzleWindow.figurePressed(this);				//whenever the figure is pressed, puzzle is getting an update
 	}
 	
 	/**

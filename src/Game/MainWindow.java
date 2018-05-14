@@ -1,82 +1,95 @@
 package Game;
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Graphics;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Insets;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-
 import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
+import javax.swing.*;
 
-public class MainWindow extends JFrame implements ActionListener {
+public class MainWindow extends Window implements ActionListener {
 
-	private JButton exit;
-	private JButton start_Game;
-	private ImagePanel menu;
-	private JLabel background;
-	private JLabel _welcomeMSG;
-	private JLabel _instructions;
+	private JButton _exitButton,_startGameButton;
+	private ImageIcon _exitIcon,_startGameIcon;
+	private ImagePanel _menu;
+	private JLabel _welcomeMSG,_instructions;
 
 	public MainWindow() {  	
-		//-------------------------- Window Preferences
-		super("Sliding Puzzle");
-		setSize(400	,400);
+		super();
+		setSize(600	,400);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLocationRelativeTo(null);
+		loadImages();
 		initiateWindow();		
 		setVisible(true);
+		setResizable(false);
 	}
 
-
-	private void initiateWindow()
+	protected void loadImages() 
 	{
-		_welcomeMSG = new JLabel();
-		_instructions = new JLabel();
-		_welcomeMSG.setText("Welcome,");
-		_instructions.setText("Please choose one of the options below");
+		try {
+			Image icon = ImageIO.read(new File("Images/icon.png"));
+			setIconImage(icon);
+			_startGameIcon = new ImageIcon("Images/playMainIcon.png");
+			_exitIcon = new ImageIcon("Images/exitIcon.png");		
+		} catch (IOException e1) {
+			System.out.println("error: could not load images in MainWindows screen");
+		}
+	}
 
-		menu = new ImagePanel();
+	protected void initiateWindow()
+	{
+		GridBagConstraints gbc = new GridBagConstraints();
+
+		final Insets insets = new Insets(5, 5, 5,5);
+		final Dimension buttonDimension = new Dimension(230, 70);
+
+		gbc.insets = insets;
+		_menu = new ImagePanel();
+
+		//-------------------------- Labels
+		_welcomeMSG = new JLabel();
+		_welcomeMSG.setText("Welcome,");
+		_welcomeMSG.setFont(new Font ("Arial",Font.BOLD, 60));
+		_welcomeMSG.setOpaque(true);
+		_welcomeMSG.setBackground(new Color(1,196,252,70));
+		gbc.gridx = 0;
+		gbc.gridy = 0;
+		_menu.add(_welcomeMSG, gbc);
+
+		_instructions = new JLabel();
+		_instructions.setText("Please choose one of the options");
+		_instructions.setFont(new Font ("Arial",Font.BOLD, 20));
+		_instructions.setOpaque(true);
+		_instructions.setBackground(new Color(1,196,252,70));
+		gbc.gridx = 0;
+		gbc.gridy = 1;
+		_menu.add(_instructions, gbc);
 
 		//-------------------------- Buttons
-		ImageIcon exitIcon = new ImageIcon("exitIcon.png");
-		exit = new JButton("Exit", exitIcon);
-		exit.addActionListener(this);
+		_startGameButton = new JButton("Play");
+		_startGameButton.setIcon(_startGameIcon);
+		_startGameButton.addActionListener(this);
+		_startGameButton.setPreferredSize(buttonDimension);
+		gbc.gridx = 1;
+		gbc.gridy = 0;
+		_menu.add(_startGameButton, gbc);
 
-		ImageIcon puzzle1_64 = new ImageIcon("playMainIcon.png");
-		start_Game = new JButton("Play",puzzle1_64);
-		start_Game.addActionListener(this);
 
-		//-------------------------- Adding to panel and frame
-		menu.add(_welcomeMSG);
-		menu.add(_instructions);
-		menu.add(start_Game);
-		menu.add(exit);
-
-		Image icon;
-		try {                
-			icon = ImageIO.read(new File("icon.png"));
-			setIconImage(icon);
-		} catch (IOException ex) {}
-
-		add(menu);
-		//        pack();		
+		_exitButton = new JButton("Exit");
+		_exitButton.setIcon(_exitIcon);
+		_exitButton.addActionListener(this);
+		_exitButton.setPreferredSize(buttonDimension);
+		gbc.gridx = 1;
+		gbc.gridy = 1;
+		_menu.add(_exitButton, gbc);
+		add(_menu);
 	}
-
 
 	public static void main(String args[]) {
 		new MainWindow();
@@ -84,10 +97,11 @@ public class MainWindow extends JFrame implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if (e.getSource() == exit) {
+		if (e.getSource() == _exitButton) {
 			System.exit(0);
-		} else {
-			StartPuzzle sp = new StartPuzzle();
+		} 
+		else if (e.getSource() == _startGameButton) {
+			StartPuzzleWindow sp = new StartPuzzleWindow();
 			sp.setLocationRelativeTo(this);
 			dispose();
 		}

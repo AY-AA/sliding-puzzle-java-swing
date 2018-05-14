@@ -17,19 +17,18 @@ public class ImagePanel extends JPanel{
 	public ImagePanel() {
 		super (new GridBagLayout());
 		
-		setSize(400,600);
+//		setSize(400,600);
 		
 		try {                
-			image = ImageIO.read(new File("Background.jpg"));
+			image = ImageIO.read(new File("Images/Background.jpg"));
 		} catch (IOException ex) {
-			// handle exception...
 		}
 	}
 
 	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		g.drawImage(image, 0, 0, this); // see javadoc for more info on the parameters            
+		g.drawImage(image, 0, 0, this); 
 	}
 
 }

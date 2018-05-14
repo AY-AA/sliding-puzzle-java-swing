@@ -15,7 +15,7 @@ import javax.swing.*;
 
 
 
-public class Puzzle extends JFrame implements ActionListener, KeyListener, PropertyChangeListener
+public class PuzzleWindow extends Window implements ActionListener, KeyListener
 {
 	// --- STACK ---
 	private int[] _currentBoard;				//for each 0<i<(board size)^2 this int array specifies where is the current index i in the board matrix
@@ -57,18 +57,20 @@ public class Puzzle extends JFrame implements ActionListener, KeyListener, Prope
 	 * Puzzle object constructor, creates a new windows and adds components using addComponents method
 	 * @param board is the sliding puzzle game component
 	 */
-	public Puzzle (Board board)
+	public PuzzleWindow (Board board)
 	{
-		super("Sliding Puzzle");
+		super();
 		_board = board;
 		_boardDimension = _board.getDimension();
 		_boardsStack = new Stack();
 		_boardsStack.push(_board);
 		
+
 		setPreferredSize(new Dimension(450, 520));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		addComponents();
-		
+		loadImages();
+		initiateWindow();
+
 		resetTimer();
 		_timer = new Timer(1000,this);
 		_timer.start();
@@ -77,19 +79,18 @@ public class Puzzle extends JFrame implements ActionListener, KeyListener, Prope
 		pack();
 		setVisible(true);		
 	}
-	/**
-	 * creates the items, icons and components which are presented during the game
-	 */
-	private void addComponents()
+	protected void loadImages()
 	{
 		// set icons
-		_stopIcon = new ImageIcon("stopIcon.png"); 
-		_startIcon = new ImageIcon("startIcon.png"); 
-		_undoIcon = new ImageIcon("undoIcon.png"); 
-		_changeImageIcon = new ImageIcon("changeImageIcon.png"); 
-		_menuIcon = new ImageIcon("menuIcon.png"); 
-		_playAgainIcon = new ImageIcon ("playAgainIcon.png");
-
+		_stopIcon = new ImageIcon("Images/stopIcon.png"); 
+		_startIcon = new ImageIcon("Images/startIcon.png"); 
+		_undoIcon = new ImageIcon("Images/undoIcon.png"); 
+		_changeImageIcon = new ImageIcon("Images/changeImageIcon.png"); 
+		_menuIcon = new ImageIcon("Images/menuIcon.png"); 
+		_playAgainIcon = new ImageIcon ("Images/playAgainIcon.png");
+	}
+	protected void initiateWindow()
+	{
 		// initialize header toolbar items
 		_isStopped = false;
 		_isFinished = false;
@@ -129,7 +130,7 @@ public class Puzzle extends JFrame implements ActionListener, KeyListener, Prope
 		//initialize counter
 		_movesCounter = 0;
 		_movesCounterLabel = new JLabel();
-		_movesCounterLabel.setText(" Total moves: "+_movesCounter);
+		_movesCounterLabel.setText("        Total moves: "+_movesCounter);
 
 		// add timer and moves counter to info toolbar 
 		_infoToolbar = new JToolBar();
@@ -153,7 +154,8 @@ public class Puzzle extends JFrame implements ActionListener, KeyListener, Prope
 	 */
 	private void backToChooseImage() 
 	{
-		new StartPuzzle();
+		StartPuzzleWindow p = new StartPuzzleWindow();
+		p.setLocationRelativeTo(this);
 		dispose();
 	}
 	/**
@@ -161,7 +163,8 @@ public class Puzzle extends JFrame implements ActionListener, KeyListener, Prope
 	 */
 	private void backToMenu() 
 	{
-		new MainWindow();
+		MainWindow m = new MainWindow();
+		m.setLocationRelativeTo(this);
 		dispose();		
 	}
 	/**
@@ -222,6 +225,9 @@ public class Puzzle extends JFrame implements ActionListener, KeyListener, Prope
 			_minutes = 0;
 			_hours++;
 		}		
+		_secondsLabel.setText(String.format("%02d", _seconds));
+		_minutesLabel.setText(String.format("%02d", _minutes) + ":");
+		_hoursLabel.setText(String.format("%02d", _hours) + ":");
 	}
 	/**
 	 * resets the timer
@@ -252,6 +258,8 @@ public class Puzzle extends JFrame implements ActionListener, KeyListener, Prope
 	private void updateBoardStack() 
 	{
 		_movesCounter++;
+		_movesCounterLabel.setText("        Total moves: "+_movesCounter);
+
 		_currentBoard = _board.getCurrBoard();
 		_boardsStack.push(_currentBoard);
 		if (_board.isGameOver())
@@ -296,6 +304,7 @@ public class Puzzle extends JFrame implements ActionListener, KeyListener, Prope
 	@Override
 	public void actionPerformed(ActionEvent e)
 	{
+
 		if (_isFinished && e.getSource() == _stopStartButton)
 		{
 			playAgain();
@@ -322,21 +331,8 @@ public class Puzzle extends JFrame implements ActionListener, KeyListener, Prope
 			undo();
 		}
 	}
-	@Override
-	public void propertyChange(PropertyChangeEvent prop)
-	{
-		if (prop.getSource().equals(_lastPressed))
-		{
-			if (_board.move(_lastPressed))
-				updateBoardStack();	
-		}
-		else if (prop.getSource().equals(_seconds))
-			_secondsLabel.setText(String.format("%02d", _seconds));
-		else if (prop.getSource().equals(_minutes))
-			_minutesLabel.setText(String.format("%02d", _minutes) + ":");
-		else if (prop.getSource().equals(_hours))
-			_hoursLabel.setText(String.format("%02d", _hours) + ":");		
-	}
+	
+
 	@Override
 	public void keyPressed(KeyEvent e) 
 	{
@@ -396,7 +392,7 @@ public class Puzzle extends JFrame implements ActionListener, KeyListener, Prope
 		}
 	} 
 	@Override
-	
+
 	public void keyReleased(KeyEvent arg0) {
 		// TODO Auto-generated method stub
 

@@ -15,7 +15,7 @@ import javax.swing.JPanel;
 
 import Board.Cell;
 import Board.Figure;
-import Game.Puzzle;
+import Game.PuzzleWindow;
 import ImageHandler.ImageLoader;
 import ImageHandler.ImageResizer;
 //the new Board
