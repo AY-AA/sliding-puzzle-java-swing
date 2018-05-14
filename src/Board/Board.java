@@ -2,6 +2,7 @@ package Board;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -20,7 +21,7 @@ import Board.Figure;
 import Game.Puzzle;
 import ImageHandler.ImageLoader;
 import ImageHandler.ImageResizer;
-//the new Board
+
 public class Board extends JPanel implements ActionListener{
 
 	private ArrayList<Figure> boardDS; //Data Structure to hold the board.
@@ -31,6 +32,7 @@ public class Board extends JPanel implements ActionListener{
 	private int place;
 	private boolean isGameOver;
 	private int n;
+	private JLabel _empty;
 
 	/**
 	 * Constructor, receiving the image of the puzzle and the dimension of the board
@@ -38,16 +40,17 @@ public class Board extends JPanel implements ActionListener{
 	 * @param puzzle
 	 */
 	public Board(int dimension, BufferedImage puzzle){
-		setPreferredSize(new Dimension(410, 410));
+		figureWidth = puzzle.getWidth()/dimension; //size of each button
+		figureHeight = puzzle.getHeight()/dimension;
+		this.dimension = dimension;
+		n = this.dimension*this.dimension;	
+		//setSize(dimension*figureWidth,dimension*figureHeight);
 		//setBorder(BorderFactory.createLineBorder(Color.RED, 5));
 		//setBackground(Color.BLACK);
-		this.dimension = dimension;
 		n = this.dimension*this.dimension;	
 		boardDS = new ArrayList<Figure>();
 		positions = new int[n];
-		figureWidth = puzzle.getWidth()/dimension; //size of each button
-		figureHeight = puzzle.getHeight()/dimension;
-		setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
+		setLayout(new GridLayout(dimension,dimension,1,1));
 		initBoard(puzzle);
 		isGameOver = false;
 		setVisible(true);
@@ -60,6 +63,12 @@ public class Board extends JPanel implements ActionListener{
 	public int getDimension() {
 		return this.dimension;
 	}
+	public int getFigureWidth() {
+		return figureWidth;
+	}
+	public int getFigureHeight() {
+		return figureHeight;
+	}
 	//--------------------------
 
 	/**
@@ -69,7 +78,9 @@ public class Board extends JPanel implements ActionListener{
 	private void initBoard(BufferedImage puzzle) {
 		int x = 0, y = 0;
 		for(int i = 0; i < n-1; i++){
-			boardDS.add(new Figure(i+1, new ImageIcon(puzzle.getSubimage(x, y, figureWidth, figureHeight))));
+			ImageIcon _imgToAdd = new ImageIcon(puzzle.getSubimage(x, y, figureWidth, figureHeight));
+			Figure  _figToAdd = new Figure(i+1, _imgToAdd);
+			boardDS.add(_figToAdd);
 			if((i+1) % dimension == 0)
 			{
 				x = 0;
@@ -117,8 +128,12 @@ public class Board extends JPanel implements ActionListener{
 			if(tmp != null) {
 				this.add(tmp);
 			}
+			else {
+				_empty = new JLabel();
+				_empty.setPreferredSize(new Dimension(figureWidth, figureHeight));
+				this.add(_empty);
+			}
 		}
-		validate();
 	}
 
 	public void remover(){

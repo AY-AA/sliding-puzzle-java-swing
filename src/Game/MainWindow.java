@@ -1,76 +1,99 @@
 package Game;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.GridLayout;
+import java.awt.Image;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
+import java.io.File;
+import java.io.IOException;
+import javax.imageio.ImageIO;
+import javax.swing.*;
 
 public class MainWindow extends JFrame implements ActionListener {
-	
-    private JButton exit;
-    private JButton start_Game;
-    private JPanel menu;
-    private JLabel background;
 
-    public MainWindow() {
-    	//-------------------------- Window Preferences
-        super("Welcome");
-        setSize(600	,600);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
-        background = new JLabel(new ImageIcon("Background.jpg"));
-        setContentPane(background);
-        setLayout(new BorderLayout());
-        menu = new JPanel();
-        menu.setLayout(new GridBagLayout());
+	private JButton _exitButton,_startGameButton;
+	private ImageIcon _exitIcon,_startGameIcon;
+	private ImagePanel _menu;
+	private JLabel _welcomeMSG,_instructions;
 
-        //-------------------------- Buttons
-        ImageIcon exitIcon = new ImageIcon("exitIcon.png");
-        exit = new JButton("Exit", exitIcon);
-        exit.addActionListener(this);
-        
-        ImageIcon puzzle1_64 = new ImageIcon("playMainIcon.png");
-        start_Game = new JButton("Play",puzzle1_64);
-        start_Game.addActionListener(this);
-        
-        //-------------------------- Grid Layout preferences
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.weightx = 1;
-        gbc.fill = gbc.HORIZONTAL;
-        gbc.gridwidth = GridBagConstraints.REMAINDER;
-        
-        //-------------------------- Adding to panel and frame
-        menu.add(start_Game, gbc);
-        menu.add(exit, gbc);
+	public MainWindow() {  	
+		super("Sliding Puzzle");
+		setSize(600	,400);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setLocationRelativeTo(null);
+		loadImages();
+		initiateWindow();		
+		setVisible(true);
+	}
 
-        add(menu, BorderLayout.EAST);
-        pack();
-        setVisible(true);
-    }
+	private void loadImages() 
+	{
+		try {
+			Image icon = ImageIO.read(new File("icon.png"));
+			setIconImage(icon);
+			_startGameIcon = new ImageIcon("playMainIcon.png");
+			_exitIcon = new ImageIcon("exitIcon.png");		
+		} catch (IOException e1) {
+			System.out.println("error: could not load images in MainWindows screen");
+		}
+	}
 
-    public static void main(String args[]) {
-       new MainWindow();
-    }
+	private void initiateWindow()
+	{
+		GridBagConstraints gbc = new GridBagConstraints();
 
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == exit) {
-            System.exit(0);
-        } else {
-        	StartPuzzle sp = new StartPuzzle();
-        	sp.setLocationRelativeTo(this);
-        	dispose();
-        }
+		final Insets insets = new Insets(5, 5, 5,5);
 
-    }
+		gbc.insets = insets;
+		_menu = new ImagePanel();
+
+		//-------------------------- Labels
+		_welcomeMSG = new JLabel();
+		_welcomeMSG.setText("Welcome,");
+		gbc.gridx = 0;
+		gbc.gridy = 0;
+		_menu.add(_welcomeMSG, gbc);
+
+		_instructions = new JLabel();
+		_instructions.setText("Please choose one of the options");
+		gbc.gridx = 0;
+		gbc.gridy = 1;
+		_menu.add(_instructions, gbc);
+
+		//-------------------------- Buttons
+		_startGameButton = new JButton("Play");
+		_startGameButton.setIcon(_startGameIcon);
+		_startGameButton.addActionListener(this);
+		gbc.gridx = 1;
+		gbc.gridy = 0;
+		_menu.add(_startGameButton, gbc);
+
+
+		_exitButton = new JButton("Exit");
+		_exitButton.setIcon(_exitIcon);
+		_exitButton.addActionListener(this);
+		gbc.gridx = 1;
+		gbc.gridy = 1;
+		_menu.add(_exitButton, gbc);
+		add(_menu);
+	}
+
+
+	public static void main(String args[]) {
+		new MainWindow();
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if (e.getSource() == _exitButton) {
+			System.exit(0);
+		} 
+		else if (e.getSource() == _startGameButton) {
+			StartPuzzle sp = new StartPuzzle();
+			sp.setLocationRelativeTo(this);
+			dispose();
+		}
+
+	}
 
 }
-    

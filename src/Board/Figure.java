@@ -3,19 +3,23 @@ package Board;
 import javax.swing.*;
 import Game.Puzzle;
 import java.awt.event.ActionListener;
+import java.awt.Color;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 
 public class Figure extends JButton implements ActionListener
 {
 
 	private final int _solCell;
-	private int _currentIndex;
+	private int _currentCell;
 	
 	public Figure(int index ,ImageIcon figure) 
 	{
-		_currentIndex = index;
+		_currentCell = index;
 		_solCell = index;
-		setIcon(figure);
+		this.setBorderPainted(false);
+		//this.setMargin(new Insets(0, 0, 0, 0));
+		this.setIcon(figure);
 		addActionListener(this);
 	}
 	
@@ -30,13 +34,13 @@ public class Figure extends JButton implements ActionListener
 	 */
 	public void setCurrentIndex(int index)
 	{
-		_currentIndex = index;
+		_currentCell = index;
 	}
 	
 	// -------------------------- GETTERS -------------------------- //
 	
 	public int getCurrentIndex()
 	{
-		return _currentIndex;
+		return _currentCell;
 	}
 }

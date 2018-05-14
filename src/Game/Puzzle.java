@@ -64,9 +64,8 @@ public class Puzzle extends JFrame implements ActionListener, KeyListener, Prope
 		_boardDimension = _board.getDimension();
 		_boardsStack = new Stack();
 		_boardsStack.push(_board);
-		
-		setPreferredSize(new Dimension(board.getDimension() + 80, board.getDimension() + 80));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setLocationRelativeTo(null);
 		addComponents();
 		
 		resetTimer();
@@ -74,6 +73,7 @@ public class Puzzle extends JFrame implements ActionListener, KeyListener, Prope
 		_timer.start();
 
 		//setResizable(false);
+		this.setPreferredSize(new Dimension(_board.getFigureWidth()*_board.getDimension(),_board.getFigureHeight()*_board.getDimension() + 80));
 		pack();
 		setVisible(true);		
 	}
@@ -142,7 +142,8 @@ public class Puzzle extends JFrame implements ActionListener, KeyListener, Prope
 
 		// add items to container
 		add(_controlsToolbar, BorderLayout.NORTH);
-		add((JPanel)_board, BorderLayout.WEST);
+		add((JPanel)_board, BorderLayout.CENTER);
+		this.validate();
 		add(_infoToolbar, BorderLayout.SOUTH);
 
 	}
