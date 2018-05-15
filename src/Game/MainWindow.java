@@ -1,5 +1,6 @@
 package Game;
 import java.awt.Color;
+import java.awt.ComponentOrientation;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
@@ -28,6 +29,8 @@ public class MainWindow extends Window implements ActionListener {
 		initiateWindow();		
 		setVisible(true);
 		setResizable(false);
+        _menu.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+
 	}
 
 	protected void loadImages() 
@@ -47,14 +50,14 @@ public class MainWindow extends Window implements ActionListener {
 		GridBagConstraints gbc = new GridBagConstraints();
 
 		final Insets insets = new Insets(5, 5, 5,5);
-		final Dimension buttonDimension = new Dimension(230, 70);
+		final Dimension buttonDimension = new Dimension(130, 70);
 
 		gbc.insets = insets;
 		_menu = new ImagePanel();
 
 		//-------------------------- Labels
 		_welcomeMSG = new JLabel();
-		_welcomeMSG.setText("Welcome,");
+		_welcomeMSG.setText("Welcome");
 		_welcomeMSG.setFont(new Font ("Arial",Font.BOLD, 60));
 		_welcomeMSG.setOpaque(true);
 		_welcomeMSG.setBackground(new Color(1,196,252,70));
@@ -62,31 +65,27 @@ public class MainWindow extends Window implements ActionListener {
 		gbc.gridy = 0;
 		_menu.add(_welcomeMSG, gbc);
 
-		_instructions = new JLabel();
-		_instructions.setText("Please choose one of the options");
-		_instructions.setFont(new Font ("Arial",Font.BOLD, 20));
-		_instructions.setOpaque(true);
-		_instructions.setBackground(new Color(1,196,252,70));
-		gbc.gridx = 0;
-		gbc.gridy = 1;
-		_menu.add(_instructions, gbc);
-
 		//-------------------------- Buttons
 		_startGameButton = new JButton("Play");
 		_startGameButton.setIcon(_startGameIcon);
 		_startGameButton.addActionListener(this);
 		_startGameButton.setPreferredSize(buttonDimension);
-		gbc.gridx = 1;
-		gbc.gridy = 0;
+		gbc.gridx = 0;
+		gbc.gridy = 1;
 		_menu.add(_startGameButton, gbc);
-
+		
+		JLabel x = new JLabel();
+		x.setPreferredSize(new Dimension(230, 70));
+		gbc.gridx = 1;
+		gbc.gridy = 1;
+		_menu.add(x, gbc);
 
 		_exitButton = new JButton("Exit");
 		_exitButton.setIcon(_exitIcon);
 		_exitButton.addActionListener(this);
 		_exitButton.setPreferredSize(buttonDimension);
-		gbc.gridx = 1;
-		gbc.gridy = 1;
+		gbc.gridx = 0;
+		gbc.gridy = 2;
 		_menu.add(_exitButton, gbc);
 		add(_menu);
 	}

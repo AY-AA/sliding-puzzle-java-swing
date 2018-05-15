@@ -17,7 +17,6 @@ import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
@@ -37,7 +36,7 @@ public class StartPuzzleWindow extends Window implements ActionListener
 	private ChooseWindow _imageChooser;
 	private BufferedImage _puzzleImage,_sushiImage,_catImage,_cyberImage;
 	private final Insets _insets = new Insets(5, 5, 5,5);
-	private final Dimension _buttonDimension = new Dimension(170, 60);
+	private final Dimension _buttonDimension = new Dimension(110, 60);
 
 	public StartPuzzleWindow()
 	{
@@ -256,10 +255,8 @@ public class StartPuzzleWindow extends Window implements ActionListener
 	 */
 	private void play() {
 		_puzzleImage = ImageResizer.resizeImage(_puzzleImage, 700, 700);
-//		_openButton.setIcon( new ImageIcon(_puzzleImage.getScaledInstance(250, 250, Image.SCALE_DEFAULT)));		
-		
-//		Board board = new Board (_puzzleSize, _puzzleImage);
-		PuzzleWindow p = new PuzzleWindow (_puzzleSize, _puzzleImage);
+		Board board = new Board (_puzzleSize);
+		PuzzleWindow p = new PuzzleWindow (board,_puzzleImage);
 		p.setLocationRelativeTo(this);
 		dispose();
 	}

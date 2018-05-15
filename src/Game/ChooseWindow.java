@@ -175,8 +175,8 @@ public class ChooseWindow extends Window implements ActionListener{
 	}
 	private void play() {
 		
-//		Board board = new Board (_puzzleSize, _puzzleImage);
-		PuzzleWindow p = new PuzzleWindow (_puzzleSize, _puzzleImage);
+		Board board = new Board (_puzzleSize);
+		PuzzleWindow p = new PuzzleWindow (board,_puzzleImage);
 		p.setLocationRelativeTo(this);
 		dispose();
 		_backWindow.dispose();

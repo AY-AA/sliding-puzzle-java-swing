@@ -1,52 +1,40 @@
-package Stack;
-
-public class Stack 
-{
-	BoardNode _head;
-	public Stack() 
-	{
-	}
-	private void insertFirst(int[] head)
-	{
-		_head = new BoardNode(head);
-	}
-	
-	public void push (int[] board)
-	{
-		BoardNode newHead = new BoardNode (board);
-		if (isEmpty())
-			insertFirst (board);
-		else
-		{
-			newHead.setNext(_head);
-			_head = newHead;
-		}
-	}
-	
-	public int[] pop()
-	{
-		if(!isEmpty())
-			return _head.getBoard();
-		return null;
-	}
-//	public boolean sizeOne()
+//package Stack;
+//
+//public class Stack 
+//{
+//	BoardNode _head;
+//	public Stack() {}
+//
+//	public void push (int[] board)
 //	{
-//		if (_head.getNext() == null)
+//		BoardNode newHead = new BoardNode (board);
+//		if (isEmpty())
+//			_head = newHead;
+//		else
 //		{
-//			return true;
+//			newHead.setNext(_head);
+//			_head = newHead;
 //		}
-//		return false;
-//			
 //	}
-	public boolean isEmpty()
-	{
-		if (_head == null)
-			return true;
-		else return false;
-	}
-	public void clear() 
-	{
-		_head = null;
-	}
-
-}
+//	
+//	public int[] pop()
+//	{
+//
+//		int[] ans = _head.getBoard();
+//		_head = _head.getNext();
+//		return ans;
+//
+//	}
+//
+//	public boolean isEmpty()
+//	{
+//		if (_head == null)
+//			return true;
+//		else return false;
+//	}
+//	public void clear() 
+//	{
+//		_head = null;
+//	}
+//
+//}
