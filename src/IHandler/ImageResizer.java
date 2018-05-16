@@ -1,11 +1,11 @@
-package ImageHandler;
+package IHandler;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
 public class ImageResizer 
 {
-	public  static BufferedImage resizeImage(BufferedImage image, int width, int height) 
+	public  BufferedImage resizeImage(BufferedImage image, int width, int height) 
 	{
        int type = 0;
        type = image.getType() == 0? BufferedImage.TYPE_INT_ARGB : image.getType();

@@ -16,12 +16,6 @@ public class Figure extends JButton
 		this.setIcon(figure);
 	}
 	
-//	@Override
-//	public void actionPerformed(ActionEvent e)
-//	{
-//		PuzzleWindow.figurePressed(this);				//whenever the figure is pressed, puzzle is getting an update
-//	}
-	
 	/**
 	 * changes the current figure position
 	 */

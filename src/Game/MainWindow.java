@@ -1,59 +1,47 @@
 package Game;
+import IHandler.FilesHandler;
 import java.awt.Color;
 import java.awt.ComponentOrientation;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
-import java.awt.Image;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.IOException;
-import javax.imageio.ImageIO;
 import javax.swing.*;
 
-public class MainWindow extends Window implements ActionListener {
+
+public class MainWindow extends JFrame implements ActionListener {
 
 	private JButton _exitButton,_startGameButton;
-	private ImageIcon _exitIcon,_startGameIcon;
-	private ImagePanel _menu;
-	private JLabel _welcomeMSG,_instructions;
-
-	public MainWindow() {  	
+	private ImageIcon[] _imagesPack;
+	private ImagePanel _panel;
+	private JLabel _welcomeMSG;
+	private final String WELCOME = "Welcome to sliding puzzle game + '\n'"
+								 + "csv file loaded: ";
+	private FilesHandler _filesHandler;
+	final Dimension _BUTTON_DIMENSION = new Dimension(130, 70);
+	
+	public MainWindow(FilesHandler filesHandler) {  	
 		super();
+		_filesHandler = filesHandler;
+		_imagesPack = _filesHandler.getMainPack();
 		setSize(600	,400);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLocationRelativeTo(null);
-		loadImages();
 		initiateWindow();		
 		setVisible(true);
 		setResizable(false);
-        _menu.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
-
 	}
-
-	protected void loadImages() 
+	
+	private void initiateWindow()
 	{
-		try {
-			Image icon = ImageIO.read(new File("Images/icon.png"));
-			setIconImage(icon);
-			_startGameIcon = new ImageIcon("Images/playMainIcon.png");
-			_exitIcon = new ImageIcon("Images/exitIcon.png");		
-		} catch (IOException e1) {
-			System.out.println("error: could not load images in MainWindows screen");
-		}
-	}
-
-	protected void initiateWindow()
-	{
+		if (_filesHandler.getIcon() != null)
+			setIconImage(_filesHandler.getIcon());
 		GridBagConstraints gbc = new GridBagConstraints();
 
-		final Insets insets = new Insets(5, 5, 5,5);
-		final Dimension buttonDimension = new Dimension(130, 70);
-
-		gbc.insets = insets;
-		_menu = new ImagePanel();
+		gbc.insets = new Insets(5, 5, 5,5);
+		_panel = new ImagePanel();
 
 		//-------------------------- Labels
 		_welcomeMSG = new JLabel();
@@ -63,35 +51,36 @@ public class MainWindow extends Window implements ActionListener {
 		_welcomeMSG.setBackground(new Color(1,196,252,70));
 		gbc.gridx = 0;
 		gbc.gridy = 0;
-		_menu.add(_welcomeMSG, gbc);
+		_panel.add(_welcomeMSG, gbc);
 
 		//-------------------------- Buttons
 		_startGameButton = new JButton("Play");
-		_startGameButton.setIcon(_startGameIcon);
+		_startGameButton.setIcon(_imagesPack[0]);
 		_startGameButton.addActionListener(this);
-		_startGameButton.setPreferredSize(buttonDimension);
+		_startGameButton.setPreferredSize(_BUTTON_DIMENSION);
 		gbc.gridx = 0;
 		gbc.gridy = 1;
-		_menu.add(_startGameButton, gbc);
+		_panel.add(_startGameButton, gbc);
 		
 		JLabel x = new JLabel();
 		x.setPreferredSize(new Dimension(230, 70));
 		gbc.gridx = 1;
 		gbc.gridy = 1;
-		_menu.add(x, gbc);
+		_panel.add(x, gbc);
 
 		_exitButton = new JButton("Exit");
-		_exitButton.setIcon(_exitIcon);
+		_exitButton.setIcon(_imagesPack[1]);
 		_exitButton.addActionListener(this);
-		_exitButton.setPreferredSize(buttonDimension);
+		_exitButton.setPreferredSize(_BUTTON_DIMENSION);
 		gbc.gridx = 0;
 		gbc.gridy = 2;
-		_menu.add(_exitButton, gbc);
-		add(_menu);
+		_panel.add(_exitButton, gbc);
+        _panel.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+		add(_panel);
 	}
 
 	public static void main(String args[]) {
-		new MainWindow();
+		new MainWindow(new FilesHandler());
 	}
 
 	@Override
@@ -100,7 +89,7 @@ public class MainWindow extends Window implements ActionListener {
 			System.exit(0);
 		} 
 		else if (e.getSource() == _startGameButton) {
-			StartPuzzleWindow sp = new StartPuzzleWindow();
+			StartPuzzleWindow sp = new StartPuzzleWindow(_filesHandler);
 			sp.setLocationRelativeTo(this);
 			dispose();
 		}

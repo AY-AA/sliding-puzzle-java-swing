@@ -1,81 +1,51 @@
 package Game;
-
+import Board.Board;
+import IHandler.FilesHandler;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
-import java.awt.Image;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-
-import javax.imageio.ImageIO;
+import java.util.Random;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JTextField;
 
-import Board.*;
-import ImageHandler.ImageResizer;
-
-public class ChooseWindow extends Window implements ActionListener{
+public class ChooseWindow extends JFrame implements ActionListener{
 
 	private JButton _backButton,_sushiButton,_catButton,_cyberButton;
-	private ImageIcon _sushiIcon,_catIcon,_cyberIcon,_backIcon;
+	private ImageIcon[] _iconsPack;
 	private JLabel _chooseWindowsLabel,_backLabel;
-	private ImagePanel _imageChooser;
-	private BufferedImage _puzzleImage,_sushiImage,_catImage,_cyberImage;
+	private ImagePanel _panel;
 	private final Insets _insets = new Insets(5, 5, 5,5);
 	private final Dimension _buttonDimension = new Dimension(160, 150);
 	private int _puzzleSize;
 	private StartPuzzleWindow _backWindow;
+	private FilesHandler _filesHandler;
+	private boolean _useCSV;
 	
-	public ChooseWindow() {
+	public ChooseWindow(FilesHandler filesHandler) {
 		super();
+		_filesHandler = filesHandler;
 		setSize(600	,400);
 		setResizable(false);
-		
-		loadImages();
+		_iconsPack = _filesHandler.getChooseIconsPack();
 		initiateWindow();
-		add(_imageChooser);
+		add(_panel);
 		pack();
 	}
-	protected void loadImages()
-	{
-		try {
-			_sushiIcon = new ImageIcon ("Images/sushi.jpg");
-			_catIcon = new ImageIcon ("Images/cat.jpeg");
-			_cyberIcon = new ImageIcon ("Images/cyber.jpeg");
-			_backIcon = new ImageIcon ("Images/backIcon.png");
-			_sushiImage = ImageIO.read(new File("Images/sushi.jpg"));
-			_catImage =  ImageIO.read(new File("Images/cat.jpeg"));
-			_cyberImage = ImageIO.read(new File("Images/cyber.jpeg"));
-			Image icon = ImageIO.read(new File("Images/icon.png"));
-			setIconImage(icon);
-			resizeImages();
-		} catch (IOException e1) {
-			System.out.println("error: could not load images in ChooseWindow screen");
-		}
-
-	}
-	private void resizeImages() {
-		_sushiImage = ImageResizer.resizeImage(_sushiImage, 400, 400);
-		_catImage = ImageResizer.resizeImage(_catImage, 400, 400);
-		_cyberImage = ImageResizer.resizeImage(_cyberImage, 400, 400);
-	}
 	protected void initiateWindow() {
-		_imageChooser = new ImagePanel();
+		
+		if (_filesHandler.getIcon() != null)
+			setIconImage(_filesHandler.getIcon());
+		_panel = new ImagePanel();
 		GridBagConstraints gbco = new GridBagConstraints();
 		gbco.insets = _insets;
 		
 		// ---- Labels ----
-		
 		_chooseWindowsLabel = new JLabel();
 		_chooseWindowsLabel.setText("Choose a picture :");
 		_chooseWindowsLabel.setFont(new Font ("Arial",Font.BOLD, 30));
@@ -83,7 +53,7 @@ public class ChooseWindow extends Window implements ActionListener{
 		_chooseWindowsLabel.setBackground(new Color(1,196,252,70));
 		gbco.gridx = 1;
 		gbco.gridy = 0;
-		_imageChooser.add(_chooseWindowsLabel, gbco);
+		_panel.add(_chooseWindowsLabel, gbco);
 		
 		_backLabel = new JLabel();
 		_backLabel.setText("Back to menu :");
@@ -92,47 +62,49 @@ public class ChooseWindow extends Window implements ActionListener{
 		_backLabel.setBackground(new Color(1,196,252,70));
 		gbco.gridx = 1;
 		gbco.gridy = 2;
-		_imageChooser.add(_backLabel, gbco);
+		_panel.add(_backLabel, gbco);
 		
 		// ---- Buttons ----
 		_catButton = new JButton();
 		_catButton.setName("Cat");
-		_catButton.setIcon(_catIcon);
+		_catButton.setIcon(_iconsPack[0]);
 		_catButton.addActionListener(this);
 		_catButton.setPreferredSize(_buttonDimension);
 		gbco.gridx = 0;
 		gbco.gridy = 1;
-		_imageChooser.add(_catButton,gbco);
+		_panel.add(_catButton,gbco);
 
 		_sushiButton = new JButton();
 		_sushiButton.setName("Sushi");
-		_sushiButton.setIcon(_sushiIcon);
+		_sushiButton.setIcon(_iconsPack[1]);
 		_sushiButton.addActionListener(this);
 		_sushiButton.setPreferredSize(_buttonDimension);
 		gbco.gridx = 1;
 		gbco.gridy = 1;
-		_imageChooser.add(_sushiButton,gbco);
+		_panel.add(_sushiButton,gbco);
 
 		_cyberButton = new JButton();
 		_cyberButton.setName("Cyber");
-		_cyberButton.setIcon(_cyberIcon);
+		_cyberButton.setIcon(_iconsPack[2]);
 		_cyberButton.addActionListener(this);
 		_cyberButton.setPreferredSize(_buttonDimension);
 		gbco.gridx = 2;
 		gbco.gridy = 1;
-		_imageChooser.add(_cyberButton,gbco);		
+		_panel.add(_cyberButton,gbco);		
 		
 		_backButton = new JButton();
 		_backButton.setName("Back");
-		_backButton.setIcon(_backIcon);
+		_backButton.setIcon(_iconsPack[3]);
 		_backButton.addActionListener(this);
 		_backButton.setPreferredSize(new Dimension (80,80));
 		gbco.gridx = 2;
 		gbco.gridy = 2;
-		_imageChooser.add(_backButton,gbco);
+		_panel.add(_backButton,gbco);
 	}
-	public void openWindow(int pS, StartPuzzleWindow backWindow)
+
+	public void openWindow(int pS, boolean useCSV, StartPuzzleWindow backWindow)
 	{
+		_useCSV = useCSV;
 		_backWindow = backWindow;
 		_puzzleSize = pS;
 		setVisible(true);
@@ -149,20 +121,20 @@ public class ChooseWindow extends Window implements ActionListener{
 		{
 		case "Cyber":
 		{
-			_puzzleImage =_cyberImage;
-			play();
+			_filesHandler.setPuzzleImage("Cyber");
+			start(_puzzleSize,_useCSV);
 			break;
 		}
 		case "Sushi":
 		{
-			_puzzleImage = _sushiImage;
-			play();
+			_filesHandler.setPuzzleImage("Sushi");
+			start(_puzzleSize,_useCSV);
 			break;
 		}
 		case "Cat":
 		{
-			_puzzleImage = _catImage;
-			play();
+			_filesHandler.setPuzzleImage("Cat");
+			start(_puzzleSize,_useCSV);
 			break;
 		}
 		case "Back":
@@ -173,14 +145,52 @@ public class ChooseWindow extends Window implements ActionListener{
 		}
 		
 	}
-	private void play() {
+	/**
+	 * creates a random game
+	 * choosing a picture of the sample pictures given in the assignment
+	 * randomizes a puzzle size ( 3 , 4 or 5 sized)
+	 */
+	public void randomGame(boolean csvSelected) 
+	{
+		Random rand = new Random();
+		int randomNum = rand.nextInt(3) + 3;		//find the next random able board on file
+		while(csvSelected && !_filesHandler.legalCsvSize(randomNum)) 
+			randomNum = rand.nextInt(3) + 3;
+		Board board;
+		_filesHandler.setPuzzleImage(randomNum);
+		if (csvSelected)
+		{
+			int[] firstBoard = _filesHandler.getBoardFromCSV(randomNum);
+			board = new Board (randomNum, firstBoard);
+		}
+		else
+			board = new Board(randomNum);
+		play(board);
+	}
+	public void start(int puzSize, boolean useCSV)
+	{
+		_puzzleSize = puzSize;
+		Board board;
+		if (useCSV)
+		{
+			int[] firstBoard = _filesHandler.getBoardFromCSV(puzSize);
+			board = new Board (puzSize, firstBoard);
+		}
+		else
+			board = new Board (puzSize);
+		play(board);
+	}
+	/**
+	 * creates a new sliding puzzle game
+	 */
+	private void play(Board board) {
 		
-		Board board = new Board (_puzzleSize);
-		PuzzleWindow p = new PuzzleWindow (board,_puzzleImage);
+		PuzzleWindow p = new PuzzleWindow (board,_filesHandler);
 		p.setLocationRelativeTo(this);
 		dispose();
-		_backWindow.dispose();
-		
+		if (_backWindow != null)
+			_backWindow.dispose();
 	}
+	
 
 }

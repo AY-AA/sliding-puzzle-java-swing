@@ -1,22 +1,32 @@
 package Board;
-
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.Scanner;
 import java.util.Stack;
-
-import Stack.*;
 
 public class Board {
 	
-	private final int _dimension;
+	private final int _DIMENSIONS;
 	private int[] _positions;
-	private final int _totalFigures;
+	private final int _TOTAL_FIGURES;
 	private Stack _boardsStack;	
 	
 	public Board(int puzzleSize) 
 	{
-		_dimension = puzzleSize;
-		_totalFigures = _dimension*_dimension;
+		_DIMENSIONS = puzzleSize;
+		_TOTAL_FIGURES = _DIMENSIONS *_DIMENSIONS;
+		_positions = new int [_TOTAL_FIGURES];
+		_boardsStack = new Stack();
+		boardShuffle();
+
+	}
+	// additional constructor for creating board of given array
+	public Board (int _puzzleSize, int[] board)
+	{
+		_positions = board;
+		_DIMENSIONS = _puzzleSize;
+		_TOTAL_FIGURES = _DIMENSIONS*_DIMENSIONS;
 		_boardsStack = new Stack();
 	}
 	/**
@@ -25,7 +35,7 @@ public class Board {
 	 */
 	private int[] duplicateBoard() 
 	{
-		int tN = _totalFigures;
+		int tN = _TOTAL_FIGURES;
 		int[] tBoard = new int [tN];
 		for (int i=0; i<tN ; i++)
 			tBoard[i] = _positions[i];
@@ -34,26 +44,75 @@ public class Board {
 	/**
 	 * Shuffling the board itself and adding it to the JPanel
 	 */
-	public ArrayList<Figure> boardShuffle(ArrayList<Figure> boardFigures)
-	{
-		Random randomGenerator = new Random();
-		ArrayList<Figure> hardCopy = new ArrayList<Figure>(boardFigures);
-
-		for (int i = 0; i < _totalFigures; i++) {
-			int randomIndex = randomGenerator.nextInt(boardFigures.size());
-			Figure tmpFig = boardFigures.get(randomIndex);
-			if (tmpFig == null) 
-			{
-				_positions[i] = 0;
-			} 
-			else 
-			{
-				_positions[i] = boardFigures.get(randomIndex).getCurrentIndex();
-				tmpFig.setCurrentIndex(i + 1);
-			}
-			boardFigures.remove(randomIndex);
-		}
-		return hardCopy;
+    private void boardShuffle() 
+    {
+        Random randomGenerator = new Random();
+        int randomNumber = randomGenerator.nextInt(_DIMENSIONS * 500) + 50;    //making sure randomNumber is not zero
+        orderInSolution();
+        while (randomNumber != 0) {
+            int zeroIdx = findZero();
+            int[] neigh = findNeighboursOfZero(zeroIdx);
+            int movingNeigh = findLegalNeighbourOfZero(neigh, zeroIdx);
+            switchFig(zeroIdx, movingNeigh);
+            randomNumber--;
+        }
+    }
+    /**
+     * finds zero's legal neighbors
+     * @param neigh array of neighbors
+     * @param zeroIdx zero's index
+     * @return
+     */
+    private int findLegalNeighbourOfZero(int[] neigh, int zeroIdx) {
+        ArrayList<Integer> legalNeigh = new ArrayList<Integer>();
+        for (int i = 0; i < neigh.length; i++)
+            if (isLegalMove(neigh[i], zeroIdx))
+                legalNeigh.add(neigh[i]);
+        Random randomGenerator = new Random();
+        return legalNeigh.get(randomGenerator.nextInt(legalNeigh.size()));
+    }
+    /**
+     * finds zero's neighbors
+     * @param zeroIdx
+     * @return
+     */
+    private int[] findNeighboursOfZero(int zeroIdx) {
+        int[] neigh = new int[4];
+        neigh[0] = zeroIdx - 1;
+        neigh[1] = zeroIdx + 1;
+        neigh[2] = zeroIdx - _DIMENSIONS;
+        neigh[3] = zeroIdx + _DIMENSIONS;
+        return neigh;
+    }
+    /**
+     * checks whether a certain move of two index is legal
+     * @param i
+     * @param zero
+     * @return
+     */
+    private boolean isLegalMove(int i, int zero) {
+        int tBig, tSmall;
+        if (i > zero) {
+            tBig = i;
+            tSmall = zero;
+        } else {
+            tSmall = i;
+            tBig = zero;
+        }
+        if (((tBig - tSmall == 1) && (tBig % _DIMENSIONS == 0) && 
+        		(tSmall%_DIMENSIONS == _DIMENSIONS - 1)) 
+        		|| (i < 0) || (i >=_TOTAL_FIGURES)){
+            return false;
+        }
+        return true;
+    }
+	/**
+	 * places figures in solution places
+	 */
+    private void orderInSolution() {
+        for (int i = 0; i < _TOTAL_FIGURES - 1; i++)
+            _positions[i] = i + 1;
+        _positions[_TOTAL_FIGURES - 1] = 0;
 	}
 	/**
 	 * switch indexes of given figure's indexes
@@ -72,7 +131,7 @@ public class Board {
 	 * @return
 	 */
 	public int findZero() {
-		for (int i = 0; i < _totalFigures; i++)
+		for (int i = 0; i < _TOTAL_FIGURES; i++)
 			if (_positions[i] == 0)
 				return i;
 		return 0;
@@ -86,21 +145,27 @@ public class Board {
 		if (_boardsStack.isEmpty())
 			return false;
 		_positions = (int[]) _boardsStack.pop();
-		for (int i = 0; i < _totalFigures; i++) {
-			int x = _positions[i];
-			if (x != 0)
-			{
-				Figure tempFig = figures.get(x-1);
-				tempFig.setCurrentIndex(i + 1);
-			}
-		}
+		applyBoard(figures);
 		return true;
 	}
+	/**
+	 * sets the figures in their right place on board
+	 * @param figures
+	 */
+    public void applyBoard(ArrayList<Figure> figures) {
+        for (int i = 0; i < _TOTAL_FIGURES; i++) {
+            int x = _positions[i];
+            if (x != 0) {
+                Figure tempFig = figures.get(x - 1);
+                tempFig.setCurrentIndex(i + 1);
+            }
+        }
+    }
 	/**
 	 * checks if the game is done
 	 */
 	public boolean checkAnswer() {
-		for (int i = 0; i < _totalFigures - 1; i++) {
+		for (int i = 0; i < _TOTAL_FIGURES - 1; i++) {
 			if (_positions[i] != i + 1) {
 				return false;
 			}
@@ -119,18 +184,19 @@ public class Board {
 	 */
 	public void pushToStack() {
 		_boardsStack.push(duplicateBoard());
-		
 	}
 	/**
 	 * creates a new game
 	 * @param bFigures
 	 * @return
 	 */
-	public ArrayList<Figure> play(ArrayList<Figure> bFigures)
+	public void playAgain(ArrayList<Figure> bFigures)
 	{
-		_positions = new int[_totalFigures];
-		return boardShuffle(bFigures);
+		_positions = new int[_TOTAL_FIGURES];
+		boardShuffle();
+		applyBoard(bFigures);
 	}
+	
 
 	// --- GETTERS ---
 	/**
@@ -139,7 +205,7 @@ public class Board {
 	 */
 	public int getTotalFigures()
 	{
-		return _totalFigures;
+		return _TOTAL_FIGURES;
 	}
 	/**
 	 * return the board's dimension
@@ -147,7 +213,7 @@ public class Board {
 	 */
 	public int getDimension()
 	{
-		return _dimension;
+		return _DIMENSIONS;
 	}
 	/**
 	 * return the value of index i in positions array
@@ -157,8 +223,4 @@ public class Board {
 	public int get(int i) {
 		return _positions[i];
 	}
-
-
 }
-
-
