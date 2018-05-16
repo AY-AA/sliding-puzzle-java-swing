@@ -131,6 +131,7 @@ public class FilesHandler {
 		_puzzleWindowPack[5] = new ImageIcon ("Images/PuzzleWindow/playAgainIcon.png");
 		_puzzleWindowPack[6] = new ImageIcon ("Images/PuzzleWindow/movesIcon.png");
 		_puzzleWindowPack[7] = new ImageIcon ("Images/PuzzleWindow/timerIcon.png");
+		_puzzleWindowPack[7] = new ImageIcon ("Images/PuzzleWindow/hintIcon.png");
 	}
 	private void loadChooseWindowImages()
 	{
@@ -146,7 +147,7 @@ public class FilesHandler {
 			_catImage =  ImageIO.read(new File("Images/ChooseWindow/cat.jpeg"));
 			_cyberImage = ImageIO.read(new File("Images/ChooseWindow/cyber.jpeg"));
 			//resize
-			_sushiImage = resizePictures(_catImage);
+			_sushiImage = resizePictures(_sushiImage);
 			_catImage = resizePictures(_catImage);
 			_cyberImage = resizePictures(_cyberImage);
 		} catch(IOException e) {}
@@ -221,17 +222,17 @@ public class FilesHandler {
 	{
 		switch (random)
 		{
-		case 3:
+		case 0:
 		{
 			_puzzleImage = _cyberImage;
 			break;
 		}
-		case 4:
+		case 1:
 		{
 			_puzzleImage = _catImage;
 			break;
 		}
-		case 5:
+		case 2:
 		{
 			_puzzleImage = _sushiImage;
 			break;

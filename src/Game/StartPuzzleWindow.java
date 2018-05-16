@@ -55,7 +55,7 @@ public class StartPuzzleWindow extends JFrame implements ActionListener
 		_iconsPack = _filesHandler.getStartPuzzlePack();
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.insets = _INSETS;
-		_panel = new ImagePanel();
+		_panel = new ImagePanel("Images/Background.jpg");
 
 		// ------ Labels ------
 		_sizeLabel = new JLabel();

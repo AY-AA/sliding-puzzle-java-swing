@@ -56,6 +56,7 @@ public class Board {
             switchFig(zeroIdx, movingNeigh);
             randomNumber--;
         }
+        clearStack();
     }
     /**
      * finds zero's legal neighbors
@@ -177,7 +178,6 @@ public class Board {
 	 */
 	public void clearStack() {
 		_boardsStack.clear();
-		_boardsStack.push(_positions);
 	}
 	/**
 	 * pushes the current board onto the stack

@@ -14,12 +14,12 @@ public class PuzzleWindow extends JFrame implements ActionListener, KeyListener
 {
 
 	// --- TIMER ---
-	private Timer _timer;
+	private Timer _timer, _popupTimer;
 	private int _seconds,_minutes,_hours;
 
 	// --- HEADER TOOLBAR ---
 	private JPanel _controlsBar;
-	private JButton _undoButton, _stopStartButton, _changeImageButton, _menuButton;
+	private JButton _hintButton,_undoButton, _stopStartButton, _changeImageButton, _menuButton;
 	private ImageIcon[] _imagesPack;	
 
 	// --- FOOTER INFO ---
@@ -29,7 +29,8 @@ public class PuzzleWindow extends JFrame implements ActionListener, KeyListener
 
 	// --- GAME STATUS ---
 	private boolean _isFinished,_isStopped;
-
+	private JFrame _hintPopup;
+	
 	// --- BOARD ---
 	private JPanel _board;
 	private int _dimension, _n,_figureSize;
@@ -79,6 +80,20 @@ public class PuzzleWindow extends JFrame implements ActionListener, KeyListener
 		_undoButton.setIcon(_imagesPack[2]);
 		_undoButton.addActionListener(this);
 
+		_hintButton = new JButton("Hint");
+		_hintButton.setIcon(_imagesPack[7]);
+		_hintButton.addActionListener(this);
+		_popupTimer = new Timer(700,this);
+		
+		//popup hind window
+		_hintPopup = new JFrame();
+		BufferedImage popImg = _filesHandler.resizePictures(_puzzleImage);
+		JPanel hintPopup = new ImagePanel(popImg);
+		_hintPopup.setLocationRelativeTo(this);
+		_hintPopup.setSize(700, 700);
+		_hintPopup.setResizable(false);
+		_hintPopup.add(hintPopup);
+		
 		_changeImageButton = new JButton("Change");
 		_changeImageButton.setIcon(_imagesPack[3]);
 		_changeImageButton.addActionListener(this);
@@ -91,6 +106,7 @@ public class PuzzleWindow extends JFrame implements ActionListener, KeyListener
 		_controlsBar = new JPanel();
 		_controlsBar.setLayout(new FlowLayout(FlowLayout.CENTER));
         _controlsBar.add(_stopStartButton);
+        _controlsBar.add(_hintButton);
         _controlsBar.add(_undoButton);
         _controlsBar.add(_changeImageButton);
         _controlsBar.add(_menuButton);
@@ -440,6 +456,19 @@ public class PuzzleWindow extends JFrame implements ActionListener, KeyListener
 				PauseStartButton();
 			else
 				alert("paused");
+		}
+		else if (e.getSource() == _hintButton)
+		{
+			_popupTimer.start();
+			_hintPopup.setLocationRelativeTo(this);
+			setVisible(false);
+			_hintPopup.setVisible(true);
+		}
+		else if (e.getSource() == _popupTimer)
+		{
+			_popupTimer.stop();
+			_hintPopup.setVisible(false);
+			setVisible(true);
 		}
 		else if ( e.getSource() instanceof Figure)
 		{

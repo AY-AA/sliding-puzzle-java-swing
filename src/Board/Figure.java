@@ -5,13 +5,13 @@ import javax.swing.*;
 public class Figure extends JButton
 {
 
-	private final int _solCell;
+	private final int _SOL_CELL;
 	private int _currentCell;
 	
 	public Figure(int index ,ImageIcon figure) 
 	{
 		_currentCell = index;
-		_solCell = index;
+		_SOL_CELL = index;
 		this.setBorderPainted(false);
 		this.setIcon(figure);
 	}

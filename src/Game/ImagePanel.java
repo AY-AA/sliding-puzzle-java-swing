@@ -9,23 +9,23 @@ import javax.swing.JPanel;
 
 public class ImagePanel extends JPanel{
 
-	private BufferedImage image;
+	private BufferedImage _image;
 
-	public ImagePanel() {
+	public ImagePanel(String path) {
 		super (new GridBagLayout());
-		
-//		setSize(400,600);
-		
 		try {                
-			image = ImageIO.read(new File("Images/Background.jpg"));
+			_image = ImageIO.read(new File(path));
 		} catch (IOException ex) {
 		}
 	}
-
+	public ImagePanel(BufferedImage img) {
+		super (new GridBagLayout());
+		_image = img;
+	}
 	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		g.drawImage(image, 0, 0, this); 
+		g.drawImage(_image, 0, 0, this); 
 	}
 
 }

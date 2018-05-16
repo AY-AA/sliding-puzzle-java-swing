@@ -14,23 +14,21 @@ import javax.swing.*;
 public class MainWindow extends JFrame implements ActionListener {
 
 	private JButton _exitButton,_startGameButton;
-	private ImageIcon[] _imagesPack;
+	private ImageIcon[] _iconsPack;
 	private ImagePanel _panel;
 	private JLabel _welcomeMSG;
-	private final String WELCOME = "Welcome to sliding puzzle game + '\n'"
-								 + "csv file loaded: ";
 	private FilesHandler _filesHandler;
-	final Dimension _BUTTON_DIMENSION = new Dimension(130, 70);
+	private final Dimension _BUTTON_DIMENSION = new Dimension(130, 70);
 	
 	public MainWindow(FilesHandler filesHandler) {  	
 		super();
 		_filesHandler = filesHandler;
-		_imagesPack = _filesHandler.getMainPack();
+		_iconsPack = _filesHandler.getMainPack();
 		setSize(600	,400);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setLocationRelativeTo(null);
 		initiateWindow();		
 		setVisible(true);
+		setLocationRelativeTo(null);
 		setResizable(false);
 	}
 	
@@ -41,7 +39,7 @@ public class MainWindow extends JFrame implements ActionListener {
 		GridBagConstraints gbc = new GridBagConstraints();
 
 		gbc.insets = new Insets(5, 5, 5,5);
-		_panel = new ImagePanel();
+		_panel = new ImagePanel("Images/Background.jpg");
 
 		//-------------------------- Labels
 		_welcomeMSG = new JLabel();
@@ -55,7 +53,7 @@ public class MainWindow extends JFrame implements ActionListener {
 
 		//-------------------------- Buttons
 		_startGameButton = new JButton("Play");
-		_startGameButton.setIcon(_imagesPack[0]);
+		_startGameButton.setIcon(_iconsPack[0]);
 		_startGameButton.addActionListener(this);
 		_startGameButton.setPreferredSize(_BUTTON_DIMENSION);
 		gbc.gridx = 0;
@@ -69,7 +67,7 @@ public class MainWindow extends JFrame implements ActionListener {
 		_panel.add(x, gbc);
 
 		_exitButton = new JButton("Exit");
-		_exitButton.setIcon(_imagesPack[1]);
+		_exitButton.setIcon(_iconsPack[1]);
 		_exitButton.addActionListener(this);
 		_exitButton.setPreferredSize(_BUTTON_DIMENSION);
 		gbc.gridx = 0;

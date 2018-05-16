@@ -20,8 +20,8 @@ public class ChooseWindow extends JFrame implements ActionListener{
 	private ImageIcon[] _iconsPack;
 	private JLabel _chooseWindowsLabel,_backLabel;
 	private ImagePanel _panel;
-	private final Insets _insets = new Insets(5, 5, 5,5);
-	private final Dimension _buttonDimension = new Dimension(160, 150);
+	private final Insets _INSETS = new Insets(5, 5, 5,5);
+	private final Dimension _BUTTON_DIMENSION = new Dimension(160, 150);
 	private int _puzzleSize;
 	private StartPuzzleWindow _backWindow;
 	private FilesHandler _filesHandler;
@@ -37,13 +37,13 @@ public class ChooseWindow extends JFrame implements ActionListener{
 		add(_panel);
 		pack();
 	}
-	protected void initiateWindow() {
+	private void initiateWindow() {
 		
 		if (_filesHandler.getIcon() != null)
 			setIconImage(_filesHandler.getIcon());
-		_panel = new ImagePanel();
+		_panel = new ImagePanel("Images/Background.jpg");
 		GridBagConstraints gbco = new GridBagConstraints();
-		gbco.insets = _insets;
+		gbco.insets = _INSETS;
 		
 		// ---- Labels ----
 		_chooseWindowsLabel = new JLabel();
@@ -69,7 +69,7 @@ public class ChooseWindow extends JFrame implements ActionListener{
 		_catButton.setName("Cat");
 		_catButton.setIcon(_iconsPack[0]);
 		_catButton.addActionListener(this);
-		_catButton.setPreferredSize(_buttonDimension);
+		_catButton.setPreferredSize(_BUTTON_DIMENSION);
 		gbco.gridx = 0;
 		gbco.gridy = 1;
 		_panel.add(_catButton,gbco);
@@ -78,7 +78,7 @@ public class ChooseWindow extends JFrame implements ActionListener{
 		_sushiButton.setName("Sushi");
 		_sushiButton.setIcon(_iconsPack[1]);
 		_sushiButton.addActionListener(this);
-		_sushiButton.setPreferredSize(_buttonDimension);
+		_sushiButton.setPreferredSize(_BUTTON_DIMENSION);
 		gbco.gridx = 1;
 		gbco.gridy = 1;
 		_panel.add(_sushiButton,gbco);
@@ -87,7 +87,7 @@ public class ChooseWindow extends JFrame implements ActionListener{
 		_cyberButton.setName("Cyber");
 		_cyberButton.setIcon(_iconsPack[2]);
 		_cyberButton.addActionListener(this);
-		_cyberButton.setPreferredSize(_buttonDimension);
+		_cyberButton.setPreferredSize(_BUTTON_DIMENSION);
 		gbco.gridx = 2;
 		gbco.gridy = 1;
 		_panel.add(_cyberButton,gbco);		
@@ -157,7 +157,7 @@ public class ChooseWindow extends JFrame implements ActionListener{
 		while(csvSelected && !_filesHandler.legalCsvSize(randomNum)) 
 			randomNum = rand.nextInt(3) + 3;
 		Board board;
-		_filesHandler.setPuzzleImage(randomNum);
+		_filesHandler.setPuzzleImage(rand.nextInt(3));
 		if (csvSelected)
 		{
 			int[] firstBoard = _filesHandler.getBoardFromCSV(randomNum);
