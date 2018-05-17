@@ -1,28 +1,26 @@
 package Board;
  
 import javax.swing.*;
-import Game.Puzzle;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 
-public class Figure extends JButton implements ActionListener
-{
+/**
+ * a figure is a "cell" in the board holding its properties such as place and an image
+ */
+public class Figure extends JButton {
 
-	private final int _solCell;
-	private int _currentIndex;
-	
+	private final int _SOL_CELL;
+	private int _currentCell;
+
+    /**
+     * Constructor
+     * @param index
+     * @param figure
+     */
 	public Figure(int index ,ImageIcon figure) 
 	{
-		_currentIndex = index;
-		_solCell = index;
-		setIcon(figure);
-		addActionListener(this);
-	}
-	
-	@Override
-	public void actionPerformed(ActionEvent e)
-	{
-		Puzzle.figurePressed(this);				//whenever the figure is pressed, puzzle is getting an update
+		_currentCell = index;
+		_SOL_CELL = index;
+		this.setBorderPainted(false);
+		this.setIcon(figure);
 	}
 	
 	/**
@@ -30,13 +28,13 @@ public class Figure extends JButton implements ActionListener
 	 */
 	public void setCurrentIndex(int index)
 	{
-		_currentIndex = index;
+		_currentCell = index;
 	}
-	
+
 	// -------------------------- GETTERS -------------------------- //
-	
 	public int getCurrentIndex()
 	{
-		return _currentIndex;
+		return _currentCell;
 	}
+
 }
