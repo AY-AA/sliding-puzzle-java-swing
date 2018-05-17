@@ -12,25 +12,44 @@ import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
+/**
+ * file handler is an object handling all file related missions such as reading etc
+ */
 public class FilesHandler {
+
 	private Image _icon;
 	private boolean _csvFound,_csvLoaded;
 	private ImageIcon[] _startPuzzleImageIconPack, _mainImagePack, _puzzleWindowPack,_chooseWindowIconPack;
-	private Image[] _chooseWindowImagePack;
 	private BufferedImage _puzzleImage,_sushiImage,_catImage,_cyberImage;
 	private ArrayList<int[]> _boardsHolder3,_boardsHolder4,_boardsHolder5;
 	private ArrayList<int[]>[] _boardSizes;
 	private ImageLoader _imageLoader;
 	private ImageResizer _imageResizer;
-	
+	private boolean _start,_main,_choose,_puzzle,_ico, _given;
+	private ArrayList<Integer> _csvBoardsPossibleSizes;
+
+    /**
+     * Constructor setting up the basic preferences of the File Handler
+     */
 	public FilesHandler() {
+		_start = true;
+		_given = true;
+		_main = true;
+		_choose = true;
+		_puzzle = true; 
+		_ico = true;;
 		_icon = null;
 		_imageResizer = new ImageResizer();
 		_imageLoader = new ImageLoader();
+		_csvLoaded = false;
 		loadImages();
 		loadCSV();
 	}
 
+    /**
+     * initiating the process of reading the csv file from data storage
+     * uses get getcsvBoards, csvToString
+     */
 	private void loadCSV() {
 		_boardSizes = (ArrayList<int[]>[]) new ArrayList[3];
 		_boardsHolder3 = new ArrayList<>();
@@ -39,15 +58,26 @@ public class FilesHandler {
 		_boardSizes[0] = _boardsHolder3;
 		_boardSizes[1] = _boardsHolder4;
 		_boardSizes[2] = _boardsHolder5;
+		_csvBoardsPossibleSizes = new ArrayList<>();
 		getCsvBoards();
-		System.out.println("UPLOADED");
+		if(_csvLoaded && (_boardsHolder3 != null || _boardsHolder4 != null || _boardsHolder5 != null)) {
+            _csvBoardsPossibleSizes.sort(Integer::compareTo);
+        }
 	}
+
+    /**
+     * creating a DS that stores the csv file as puzzle boards
+     */
 	private void getCsvBoards() {
 
 		String tCsv = csvToString();
-		if (!_csvFound || tCsv.isEmpty())
+		if (tCsv.isEmpty())
 		{
 			_csvLoaded = false;	
+			if (!_csvFound)
+				return;
+			_csvFound = false;
+			alert("empty csv");
 			return;
 		}
 		_csvLoaded = true;		
@@ -56,11 +86,18 @@ public class FilesHandler {
 		while (i < tCsvBoards.length) { //Cycling all String from csv
 			if (tCsvBoards[i].length() == 1) { //if its board size , backup check
 				int tJump = Integer.parseInt(tCsvBoards[i]); //get size
+                if(!_csvBoardsPossibleSizes.contains(tJump)) {
+                    _csvBoardsPossibleSizes.add(tJump);
+                }
 				int[] tPositions = new int[tJump * tJump];
+				int k = 0;
 				for (int j = i + 1; j <= (i + tJump); j++) { //Cycling Rows of current board
+				    int counter = 0;
 					String[] tRow = tCsvBoards[j].split(",");
-					for (int k = 0; k < tRow.length; k++) { // Cycling each row
-						tPositions[k] = Integer.parseInt(tRow[k]); //
+					while (counter < tRow.length) { // Cycling each row
+						tPositions[k] = Integer.parseInt(tRow[counter]);
+						counter++;
+						k++;
 					}
 				}
 				_boardSizes[tJump - 3].add(tPositions);
@@ -68,17 +105,26 @@ public class FilesHandler {
 			}
 		}
 	}
+
+    /**
+     * transferring the csv file to string in order to create boards from it
+     * @return
+     */
 	private String csvToString() {
 		try {
 			Scanner reader;
-			File tBoardCSV = new File("boards.csv");
+ 			File tBoardCSV = new File("boards.csv");
 
 			reader = new Scanner(tBoardCSV);
 			_csvFound = true;
-			reader.useDelimiter(",");
+//			reader.useDelimiter(",");
 			String tNewBoard = "";
+			tNewBoard = reader.nextLine();
+			if (tNewBoard.isEmpty())
+				return tNewBoard;
 			while (reader.hasNext()) {
-				tNewBoard = tNewBoard + reader.next() + ",";
+				tNewBoard += '\n';
+				tNewBoard += reader.nextLine();
 			}
 			reader.close();
 
@@ -88,22 +134,27 @@ public class FilesHandler {
 			alert("not found csv");
 
 		}
-		return null;
+		return "";
 	}
 
+    /**
+     * loading images to relevant places
+     */
 	private void loadImages() {
 		try {
-			_icon = ImageIO.read(new File("Images/icon.png"));
 			loadStartPuzzleImages();
 			loadMainWindowImages();
 			loadPuzzleWindowImages();
 			loadChooseWindowImages();
 			loadGivenImages();
+			_icon = ImageIO.read(new File("Images/icon.png"));
 		} catch (IOException e1) {
-			System.out.println("error: could not load images in PuzzleWindow screen");
+			System.out.println("error: could not find icon");
+			_ico = false;
 		}
 
 	}
+
 	private void loadStartPuzzleImages()
 	{
 		_startPuzzleImageIconPack = new ImageIcon [6];
@@ -113,16 +164,38 @@ public class FilesHandler {
 		_startPuzzleImageIconPack[3] = new ImageIcon ("Images/StartPuzzle/backIcon.png");
 		_startPuzzleImageIconPack[4] = new ImageIcon ("Images/StartPuzzle/csvOff.png");
 		_startPuzzleImageIconPack[5] = new ImageIcon ("Images/StartPuzzle/csvOn.png");
+		String[] files = {"changeImageIcon.png","randomIcon.png","openIcon.png","backIcon.png","csvOff.png","csvOn.png"};
+		for (int i=0; i<6 ; i++)
+		{
+			if( _startPuzzleImageIconPack[i].getIconHeight() == -1)
+			{
+				_start = false;
+				System.out.println("error: could not find " + files[i]);
+			}
+			
+		}
 	}
+
 	private void loadMainWindowImages()
 	{
 		_mainImagePack = new ImageIcon[2];
 		_mainImagePack[0] = new ImageIcon("Images/Main/playMainIcon.png");
 		_mainImagePack[1] = new ImageIcon("Images/Main/exitIcon.png");	
+		String[] files = {"playMainIcon.png","exitIcon.png"};
+		for (int i=0; i<2 ; i++)
+		{
+			if( _mainImagePack[i].getIconHeight() == -1)
+			{
+				_main = false;
+				System.out.println("error: could not find " + files[i]);
+			}
+			
+		}
 	}
+
 	private void loadPuzzleWindowImages()
 	{
-		_puzzleWindowPack = new ImageIcon[8];
+		_puzzleWindowPack = new ImageIcon[9];
 		_puzzleWindowPack[0] = new ImageIcon("Images/PuzzleWindow/stopIcon.png"); 
 		_puzzleWindowPack[1] = new ImageIcon("Images/PuzzleWindow/startIcon.png"); 
 		_puzzleWindowPack[2] = new ImageIcon("Images/PuzzleWindow/undoIcon.png"); 
@@ -131,8 +204,20 @@ public class FilesHandler {
 		_puzzleWindowPack[5] = new ImageIcon ("Images/PuzzleWindow/playAgainIcon.png");
 		_puzzleWindowPack[6] = new ImageIcon ("Images/PuzzleWindow/movesIcon.png");
 		_puzzleWindowPack[7] = new ImageIcon ("Images/PuzzleWindow/timerIcon.png");
-		_puzzleWindowPack[7] = new ImageIcon ("Images/PuzzleWindow/hintIcon.png");
+		_puzzleWindowPack[8] = new ImageIcon ("Images/PuzzleWindow/hintIcon.png");
+		String[] files = {"stopIcon.png","startIcon.png","undoIcon.png","changeImageIcon.png","menuIcon.png"
+				,"playAgainIcon.png","movesIcon.png","timerIcon.png","hintIcon.png"};
+		for (int i=0; i<9 ; i++)
+		{
+			if( _puzzleWindowPack[i].getIconHeight() == -1)
+			{
+				System.out.println("error: could not find " + files[i]);
+				_puzzle = false;
+			}
+			
+		}
 	}
+
 	private void loadChooseWindowImages()
 	{
 		_chooseWindowIconPack = new ImageIcon[4];
@@ -140,7 +225,17 @@ public class FilesHandler {
 		_chooseWindowIconPack[1] = new ImageIcon ("Images/ChooseWindow/sushi.jpg");
 		_chooseWindowIconPack[2] = new ImageIcon ("Images/ChooseWindow/cyber.jpeg");
 		_chooseWindowIconPack[3] = new ImageIcon ("Images/ChooseWindow/backIcon.png");
+		String[] files = {"cat.jpeg","sushi.jpg","cyber.jpeg","backIcon.png"};
+		for (int i=0; i<4 ; i++)
+		{
+			if( _chooseWindowIconPack[i].getIconHeight() == -1)
+			{
+				_choose = false;
+				System.out.println("error: could not find " + files[i]);
+			}
+		}
 	}
+
 	private void loadGivenImages() {
 		try {
 			_sushiImage = ImageIO.read(new File("Images/ChooseWindow/sushi.jpg"));
@@ -150,7 +245,10 @@ public class FilesHandler {
 			_sushiImage = resizePictures(_sushiImage);
 			_catImage = resizePictures(_catImage);
 			_cyberImage = resizePictures(_cyberImage);
-		} catch(IOException e) {}
+		} catch(IOException e) {
+			_given = false;
+			System.out.println("error: one of the files missing: sushi.jpg, cat.jpeg, cyber.jpeg");
+		}
 
 	}	
 
@@ -164,14 +262,26 @@ public class FilesHandler {
 		}
 		return false;
 	}
+
+    /**
+     * resizing the images to fit to the the game
+     * @param pic
+     * @return
+     */
 	public BufferedImage resizePictures(BufferedImage pic)
 	{
 		return _imageResizer.resizeImage(pic, 700, 700);
 	}
+
 	public BufferedImage resizeFinish(BufferedImage pic) 
 	{
 		return _imageResizer.resizeImage(pic, 250, 250);
 	}
+
+    /**
+     * warnings presenting method
+     * @param alert
+     */
 	private void alert(String alert)
 	{
 		switch (alert)
@@ -185,9 +295,18 @@ public class FilesHandler {
 		}
 		case "not found csv":
 		{
-			JOptionPane.showMessageDialog(null,"error: csv fild not found."
-					+ '\n' + "You can still play, you will get the options of a none csv file game.", 
-					"NO CSV FILE", JOptionPane.CANCEL_OPTION);
+			if (getStatus()) 
+			{
+				JOptionPane.showMessageDialog(null,"error: csv fild not found."
+						+ '\n' + "You can still play, you will get the options of a none csv file game.", 
+						"NO CSV FILE", JOptionPane.CANCEL_OPTION);
+			}
+			else
+			{
+				JOptionPane.showMessageDialog(null,"error: csv fild not found.", 
+						"NO CSV FILE", JOptionPane.CANCEL_OPTION);
+			}
+
 			break;
 		}
 		case "not found size":
@@ -197,6 +316,10 @@ public class FilesHandler {
 		}
 	}
 
+    /**
+     * setting up the puzzle image by choice or randomly
+     * @param pic
+     */
 	public void setPuzzleImage(String pic)
 	{
 		switch (pic)
@@ -218,6 +341,7 @@ public class FilesHandler {
 		}
 		}
 	}
+
 	public void setPuzzleImage(int random)
 	{
 		switch (random)
@@ -239,30 +363,36 @@ public class FilesHandler {
 		}
 		}
 	}
+
+    /**
+     * getters
+     * @return
+     */
 	public ImageIcon[] getStartPuzzlePack()
 	{
 		return _startPuzzleImageIconPack;
 	}
+
 	public ImageIcon[] getMainPack()
 	{
 		return _mainImagePack;
 	}
+
 	public ImageIcon[] getPuzzlePack()
 	{
 		return _puzzleWindowPack;
 	}
+
 	public ImageIcon[] getChooseIconsPack()
 	{
 		return _chooseWindowIconPack;
 	}
-	public Image[] getChooseImagesPack()
-	{
-		return _chooseWindowImagePack;
-	}
+
 	public boolean getCSVStatus()
 	{
 		return _csvLoaded;
 	}
+
 	public Image getIcon() {
 		return _icon;
 	}
@@ -270,45 +400,41 @@ public class FilesHandler {
 	public int[] getBoardFromCSV(int size)
 	{
 		Random rnd = new Random();
-		int index = rnd.nextInt(_boardSizes[size].size());
-		return _boardSizes[size].get(index);
+		int index = rnd.nextInt(_boardSizes[size - 3].size());
+		return _boardSizes[size - 3].get(index);
 	}
+
 	public BufferedImage getPuzzleImage()
 	{
 		return _puzzleImage;
 	}
-	public void getLoadingStatus()
-	{
 
-	}
+    /**
+     * checks if the chosen csv size is legal bu checking if it exists in the legal sizes DS
+     * @param pSize
+     * @return
+     */
 	public boolean legalCsvSize(int pSize) {
-		switch(pSize)
-		{
-		case 3:
-		{
-			if (_boardsHolder3 == null || _boardsHolder3.isEmpty())
-				return false;
-			return true;
-		}
-		case 4:
-		{
-			if (_boardsHolder4 == null || _boardsHolder4.isEmpty())
-				return false;
-			return true;
-		}
-		case 5:
-		{
-			if (_boardsHolder5 == null || _boardsHolder5.isEmpty())
-				return false;
-			return true;
-		}
-		}
-		return false;
+		return _csvBoardsPossibleSizes.contains(pSize);
 	}
-	public int[] getRandomCsv(int pSize) {
-		if ( pSize == 0)
-			return getRandomCSV();
-		else
-			return getRandomCsvSize(pSize);
+
+	public String getBoardSizes() {
+		int size = _csvBoardsPossibleSizes.size();
+		String ans = "{";
+		for (int i=0;i<size; i++)
+		{
+			String s = _csvBoardsPossibleSizes.get(i).toString();
+			ans += s;
+			if (i != size-1)
+				ans+= ",";
+		}
+		return ans + "}";
 	}
+
+	public boolean getStatus() {
+		if (!_given || !_start || !_main || !_choose || !_puzzle || !_ico)
+			return false;
+		return true;
+	}
+
 }

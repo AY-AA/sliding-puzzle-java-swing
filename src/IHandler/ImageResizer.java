@@ -3,6 +3,9 @@ package IHandler;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
+/**
+ * ImageResizer resizes every chosen picture to a specific width and height defined in the signature
+ */
 public class ImageResizer 
 {
 	public  BufferedImage resizeImage(BufferedImage image, int width, int height) 

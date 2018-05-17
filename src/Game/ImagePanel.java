@@ -7,6 +7,9 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
+/**
+ * small class contributing the ability to create chosen backgrounds to our JComponents
+ */
 public class ImagePanel extends JPanel{
 
 	private BufferedImage _image;

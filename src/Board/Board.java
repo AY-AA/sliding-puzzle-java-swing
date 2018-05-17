@@ -1,17 +1,22 @@
 package Board;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.Scanner;
 import java.util.Stack;
 
+/**
+ * representing a board of puzzle game, holds the pieces of the puzzle and possible moves around itself
+ */
 public class Board {
 	
 	private final int _DIMENSIONS;
 	private int[] _positions;
 	private final int _TOTAL_FIGURES;
-	private Stack _boardsStack;	
-	
+	private Stack _boardsStack;
+
+    /**
+     * Constructor setting up the basic prefferencess of the board
+     * @param puzzleSize
+     */
 	public Board(int puzzleSize) 
 	{
 		_DIMENSIONS = puzzleSize;
@@ -21,7 +26,10 @@ public class Board {
 		boardShuffle();
 
 	}
-	// additional constructor for creating board of given array
+
+    /**
+     *   additional constructor for creating a specific board of given array
+     */
 	public Board (int _puzzleSize, int[] board)
 	{
 		_positions = board;
@@ -29,6 +37,7 @@ public class Board {
 		_TOTAL_FIGURES = _DIMENSIONS*_DIMENSIONS;
 		_boardsStack = new Stack();
 	}
+
 	/**
 	 * duplicates positions board
 	 * @return a duplicated board
@@ -41,13 +50,14 @@ public class Board {
 			tBoard[i] = _positions[i];
 		return tBoard;
 	}
+
 	/**
 	 * Shuffling the board itself and adding it to the JPanel
 	 */
     private void boardShuffle() 
     {
         Random randomGenerator = new Random();
-        int randomNumber = randomGenerator.nextInt(_DIMENSIONS * 500) + 50;    //making sure randomNumber is not zero
+        int randomNumber = randomGenerator.nextInt(_DIMENSIONS * 500 + 1) + 50;    //making sure randomNumber is not zero
         orderInSolution();
         while (randomNumber != 0) {
             int zeroIdx = findZero();
@@ -58,6 +68,7 @@ public class Board {
         }
         clearStack();
     }
+
     /**
      * finds zero's legal neighbors
      * @param neigh array of neighbors
@@ -72,6 +83,7 @@ public class Board {
         Random randomGenerator = new Random();
         return legalNeigh.get(randomGenerator.nextInt(legalNeigh.size()));
     }
+
     /**
      * finds zero's neighbors
      * @param zeroIdx
@@ -85,6 +97,7 @@ public class Board {
         neigh[3] = zeroIdx + _DIMENSIONS;
         return neigh;
     }
+
     /**
      * checks whether a certain move of two index is legal
      * @param i
@@ -107,6 +120,7 @@ public class Board {
         }
         return true;
     }
+
 	/**
 	 * places figures in solution places
 	 */
@@ -115,6 +129,7 @@ public class Board {
             _positions[i] = i + 1;
         _positions[_TOTAL_FIGURES - 1] = 0;
 	}
+
 	/**
 	 * switch indexes of given figure's indexes
 	 * @param a is an index of figure
@@ -127,6 +142,7 @@ public class Board {
 		_positions[a] = _positions[b];
 		_positions[b] = temp;
 	}
+
 	/**
 	 * finds the index which holds the empty figure
 	 * @return
@@ -137,6 +153,7 @@ public class Board {
 				return i;
 		return 0;
 	}
+
 	/**
 	 * returns to the previous board
 	 * @param figures is the figures array
@@ -149,6 +166,7 @@ public class Board {
 		applyBoard(figures);
 		return true;
 	}
+
 	/**
 	 * sets the figures in their right place on board
 	 * @param figures
@@ -162,6 +180,7 @@ public class Board {
             }
         }
     }
+
 	/**
 	 * checks if the game is done
 	 */
@@ -173,18 +192,21 @@ public class Board {
 		}
 		return true;
 	}
+
 	/**
 	 * clears the boards stack
 	 */
 	public void clearStack() {
 		_boardsStack.clear();
 	}
+
 	/**
 	 * pushes the current board onto the stack
 	 */
 	public void pushToStack() {
 		_boardsStack.push(duplicateBoard());
 	}
+
 	/**
 	 * creates a new game
 	 * @param bFigures
@@ -207,6 +229,7 @@ public class Board {
 	{
 		return _TOTAL_FIGURES;
 	}
+
 	/**
 	 * return the board's dimension
 	 * @return
@@ -215,6 +238,7 @@ public class Board {
 	{
 		return _DIMENSIONS;
 	}
+
 	/**
 	 * return the value of index i in positions array
 	 * @param i

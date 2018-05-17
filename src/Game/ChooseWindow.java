@@ -14,6 +14,9 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
+/**
+ * this is a graphical menue for the user to choose which board he wants from a series of boards
+ */
 public class ChooseWindow extends JFrame implements ActionListener{
 
 	private JButton _backButton,_sushiButton,_catButton,_cyberButton;
@@ -26,9 +29,13 @@ public class ChooseWindow extends JFrame implements ActionListener{
 	private StartPuzzleWindow _backWindow;
 	private FilesHandler _filesHandler;
 	private boolean _useCSV;
-	
+
+    /**
+     * Constructor
+     * @param filesHandler
+     */
 	public ChooseWindow(FilesHandler filesHandler) {
-		super();
+		super("Sliding Puzzle");
 		_filesHandler = filesHandler;
 		setSize(600	,400);
 		setResizable(false);
@@ -37,6 +44,10 @@ public class ChooseWindow extends JFrame implements ActionListener{
 		add(_panel);
 		pack();
 	}
+
+    /**
+     * initiating Java Swing preferences
+     */
 	private void initiateWindow() {
 		
 		if (_filesHandler.getIcon() != null)
@@ -47,8 +58,8 @@ public class ChooseWindow extends JFrame implements ActionListener{
 		
 		// ---- Labels ----
 		_chooseWindowsLabel = new JLabel();
-		_chooseWindowsLabel.setText("Choose a picture :");
-		_chooseWindowsLabel.setFont(new Font ("Arial",Font.BOLD, 30));
+		_chooseWindowsLabel.setText("Choose a picture");
+		_chooseWindowsLabel.setFont(new Font ("Arial",Font.BOLD, 20));
 		_chooseWindowsLabel.setOpaque(true);
 		_chooseWindowsLabel.setBackground(new Color(1,196,252,70));
 		gbco.gridx = 1;
@@ -56,8 +67,8 @@ public class ChooseWindow extends JFrame implements ActionListener{
 		_panel.add(_chooseWindowsLabel, gbco);
 		
 		_backLabel = new JLabel();
-		_backLabel.setText("Back to menu :");
-		_backLabel.setFont(new Font ("Arial",Font.BOLD, 30));
+		_backLabel.setText("Back to menu");
+		_backLabel.setFont(new Font ("Arial",Font.BOLD, 20));
 		_backLabel.setOpaque(true);
 		_backLabel.setBackground(new Color(1,196,252,70));
 		gbco.gridx = 1;
@@ -102,6 +113,12 @@ public class ChooseWindow extends JFrame implements ActionListener{
 		_panel.add(_backButton,gbco);
 	}
 
+    /**
+     * enabling visibility of this window
+     * @param pS
+     * @param useCSV
+     * @param backWindow
+     */
 	public void openWindow(int pS, boolean useCSV, StartPuzzleWindow backWindow)
 	{
 		_useCSV = useCSV;
@@ -109,10 +126,7 @@ public class ChooseWindow extends JFrame implements ActionListener{
 		_puzzleSize = pS;
 		setVisible(true);
 	}
-	public void closeWindow()
-	{
-		setVisible(false);
-	}
+
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		JButton button = (JButton)e.getSource();
@@ -145,6 +159,7 @@ public class ChooseWindow extends JFrame implements ActionListener{
 		}
 		
 	}
+
 	/**
 	 * creates a random game
 	 * choosing a picture of the sample pictures given in the assignment
@@ -167,6 +182,12 @@ public class ChooseWindow extends JFrame implements ActionListener{
 			board = new Board(randomNum);
 		play(board);
 	}
+
+    /**
+     * initiating a game according to specific conditions
+     * @param puzSize
+     * @param useCSV
+     */
 	public void start(int puzSize, boolean useCSV)
 	{
 		_puzzleSize = puzSize;
@@ -180,6 +201,7 @@ public class ChooseWindow extends JFrame implements ActionListener{
 			board = new Board (puzSize);
 		play(board);
 	}
+
 	/**
 	 * creates a new sliding puzzle game
 	 */

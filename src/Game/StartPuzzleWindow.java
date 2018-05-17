@@ -17,7 +17,9 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
-
+/**
+ * Graphical menu for the user to choose its game preferences
+ */
 public class StartPuzzleWindow extends JFrame implements ActionListener
 {
 	private JButton _backButton,_openButton,_choose,_random;
@@ -31,11 +33,15 @@ public class StartPuzzleWindow extends JFrame implements ActionListener
 	private FilesHandler _filesHandler;
 	private boolean _csvLoaded;
 	private final Insets _INSETS = new Insets(5, 5, 5,5);
-	private final Dimension BUTTON_DIMENSION = new Dimension(110, 60);
+	private final Dimension BUTTON_DIMENSION = new Dimension(90, 60);
 
-	public StartPuzzleWindow(FilesHandler filesHandler)
-	{
-		super();
+    /**
+     * Constructor
+     * @param filesHandler
+     */
+	public StartPuzzleWindow(FilesHandler filesHandler) {
+
+		super("Sliding Puzzle");
 		_filesHandler = filesHandler;
 		_csvLoaded = _filesHandler.getCSVStatus();
 		setSize(600	,400);		
@@ -47,7 +53,12 @@ public class StartPuzzleWindow extends JFrame implements ActionListener
 
 		setResizable(false);
 		setVisible(true);
+		requestFocusInWindow();
 	}
+
+    /**
+     * setting up Java Swing preferences
+     */
 	private void initiateWindow() 
 	{
 		if (_filesHandler.getIcon() != null)
@@ -56,11 +67,11 @@ public class StartPuzzleWindow extends JFrame implements ActionListener
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.insets = _INSETS;
 		_panel = new ImagePanel("Images/Background.jpg");
-
+		Color color = new Color(248,244,233);
 		// ------ Labels ------
 		_sizeLabel = new JLabel();
-		_sizeLabel.setText("Choose puzzle size :");
-		_sizeLabel.setFont(new Font ("Arial",Font.BOLD, 30));
+		_sizeLabel.setText("Choose puzzle size");
+		_sizeLabel.setFont(new Font ("Arial",Font.BOLD, 20));
 		_sizeLabel.setOpaque(true);
 		_sizeLabel.setBackground(new Color(1,196,252,70));
 		gbc.gridx = 0;
@@ -68,8 +79,8 @@ public class StartPuzzleWindow extends JFrame implements ActionListener
 		_panel.add(_sizeLabel, gbc);
 
 		_chooseLabel = new JLabel();
-		_chooseLabel.setText("Choose a picture :");
-		_chooseLabel.setFont(new Font ("Arial",Font.BOLD, 30));
+		_chooseLabel.setText("Choose a picture");
+		_chooseLabel.setFont(new Font ("Arial",Font.BOLD, 20));
 		_chooseLabel.setOpaque(true);
 		_chooseLabel.setBackground(new Color(1,196,252,70));
 		gbc.gridx = 0;
@@ -77,8 +88,8 @@ public class StartPuzzleWindow extends JFrame implements ActionListener
 		_panel.add(_chooseLabel, gbc);
 
 		_openLabel = new JLabel();
-		_openLabel.setText("Load a picture :");
-		_openLabel.setFont(new Font ("Arial",Font.BOLD, 30));
+		_openLabel.setText("Load a picture");
+		_openLabel.setFont(new Font ("Arial",Font.BOLD, 20));
 		_openLabel.setOpaque(true);
 		_openLabel.setBackground(new Color(1,196,252,70));
 		gbc.gridx = 0;
@@ -86,8 +97,8 @@ public class StartPuzzleWindow extends JFrame implements ActionListener
 		_panel.add(_openLabel, gbc);
 
 		_randomLabel = new JLabel();
-		_randomLabel.setText("Random game :");
-		_randomLabel.setFont(new Font ("Arial",Font.BOLD, 30));
+		_randomLabel.setText("Random game");
+		_randomLabel.setFont(new Font ("Arial",Font.BOLD, 20));
 		_randomLabel.setOpaque(true);
 		_randomLabel.setBackground(new Color(1,196,252,70));
 		gbc.gridx = 0;
@@ -95,8 +106,8 @@ public class StartPuzzleWindow extends JFrame implements ActionListener
 		_panel.add(_randomLabel, gbc);
 
 		_backLabel = new JLabel();
-		_backLabel.setText("Back to main menu :");
-		_backLabel.setFont(new Font ("Arial",Font.BOLD, 30));
+		_backLabel.setText("Back to main menu");
+		_backLabel.setFont(new Font ("Arial",Font.BOLD, 20));
 		_backLabel.setOpaque(true);
 		_backLabel.setBackground(new Color(1,196,252,70));
 		gbc.gridx = 0;
@@ -134,6 +145,7 @@ public class StartPuzzleWindow extends JFrame implements ActionListener
 		_choose.setIcon(_iconsPack[0]);
 		_choose.addActionListener(this);
 		_choose.setPreferredSize(BUTTON_DIMENSION);
+		_choose.setBackground(color);
 		gbc.gridx = 1;
 		gbc.gridy = 1;
 		_panel.add(_choose,gbc);
@@ -143,6 +155,7 @@ public class StartPuzzleWindow extends JFrame implements ActionListener
 		_openButton.setIcon(_iconsPack[2]);
 		_openButton.addActionListener(this);
 		_openButton.setPreferredSize(BUTTON_DIMENSION);
+		_openButton.setBackground(color);
 		gbc.gridx = 1;
 		gbc.gridy = 2;
 		_panel.add(_openButton, gbc);
@@ -152,6 +165,7 @@ public class StartPuzzleWindow extends JFrame implements ActionListener
 		_random.setIcon(_iconsPack[1]);
 		_random.addActionListener(this);
 		_random.setPreferredSize(BUTTON_DIMENSION);
+		_random.setBackground(color);
 		gbc.gridx = 1;
 		gbc.gridy = 3;
 		_panel.add(_random,gbc);
@@ -161,6 +175,7 @@ public class StartPuzzleWindow extends JFrame implements ActionListener
 		_backButton.setIcon(_iconsPack[3]);
 		_backButton.addActionListener(this);
 		_backButton.setPreferredSize(BUTTON_DIMENSION);
+		_backButton.setBackground(color);
 		gbc.gridx = 1;
 		gbc.gridy = 4;
 		_panel.add(_backButton,gbc);
@@ -191,16 +206,19 @@ public class StartPuzzleWindow extends JFrame implements ActionListener
 			_puzzleSize = Integer.parseInt(input);
 			if (_puzzleSize > 1 )
 				return true;
-			else if (_csvLoaded && _csvCheckBox.isSelected() && _puzzleSize == 0)
+			else if (_csvLoaded && _csvCheckBox.isSelected())
 				return true;
 		}
 		catch (NumberFormatException e) {}
-		if (!_csvLoaded && useAlerts)
-			alert("invalid size");
-		else if (useAlerts)
-			alert("none selected");
+		if ((!_csvLoaded && useAlerts) || (!_csvCheckBox.isSelected() && useAlerts)) {
+            alert("invalid size");
+        }
+		else if (_csvCheckBox.isSelected() && useAlerts) {
+            alert("invalid csv size");
+        }
 		return false;
 	}
+
 	/**
 	 * handles the alerts shown to user 
 	 * @param alert is string which represent an alert type
@@ -216,14 +234,19 @@ public class StartPuzzleWindow extends JFrame implements ActionListener
 					"Size is not chosen", JOptionPane.CANCEL_OPTION);
 			break;
 		}
-		case "none selected":
-		{
-			JOptionPane.showMessageDialog(null, "Could not start game"
-					+ '\n' + "Please type a board size or use CSV" +'\n'
-					+ "You can play a random game using CSV by choosing size 0.", 
-					"No board selected", JOptionPane.CANCEL_OPTION);
-			break;
-		}
+		case "none selected": {
+            JOptionPane.showMessageDialog(null, "Could not start game"
+                            + '\n' + "Please type a correct board size or use CSV" + '\n'
+                            + "You can play a random game using CSV by clicking the CSV button (turns into green) and click the random button.",
+                    "No board selected", JOptionPane.CANCEL_OPTION);
+            break;
+        }
+            case "invalid csv size":{
+            	String sizes = _filesHandler.getBoardSizes();
+                JOptionPane.showMessageDialog(null, "Your csv board size choice is invalid, "
+                		+ '\n' + "Please choose a csv board size from our default sizes: " +sizes,
+                        "No board selected", JOptionPane.CANCEL_OPTION);
+            }
 		}
 	}
 
@@ -259,29 +282,32 @@ public class StartPuzzleWindow extends JFrame implements ActionListener
 		}
 		}
 	}
+
+    /**
+     * handles the case in which the user pressed open
+     */
 	private void parseOpen() {
-		if (parseTextField(true) && _filesHandler.loadPuzzleImage())
+		boolean useCSV;
+		if (_csvLoaded && (useCSV = _csvCheckBox.isSelected()))
 		{
-			if (_csvLoaded) {
-				boolean useCSV = _csvCheckBox.isSelected();
-				if (useCSV && isValidCsvSize())
-				{
-					_chooseWindow.start(_puzzleSize,true);
-					setVisible(false);
-				}
-				else 
-				{
-					_chooseWindow.start(_puzzleSize,false);
-					setVisible(false);
-				}
-			}
-			else
-				{
-				_chooseWindow.start(_puzzleSize,false);
+			if (!parseTextField(true))
+				return;
+			if (isValidCsvSize(true) && _filesHandler.loadPuzzleImage())
+			{
+				_chooseWindow.start(_puzzleSize,true);
 				setVisible(false);
-				}
+			}
+		}
+		else if (parseTextField(true) && _filesHandler.loadPuzzleImage())
+		{
+			_chooseWindow.start(_puzzleSize,false);
+			setVisible(false);	
 		}
 	}
+
+    /**
+     * handles the case in which the user pressed Random
+     */
 	private void parseRandom() {
 		if (_csvLoaded)
 		{	
@@ -295,25 +321,30 @@ public class StartPuzzleWindow extends JFrame implements ActionListener
 			_chooseWindow.randomGame(false);
 		dispose();
 	}
+
+    /**
+     * handles the case in which the user pressed choose
+     */
 	private void parseChooseOption() 
 	{
 		if (_csvLoaded) 
 		{
-			boolean useCSV = _csvCheckBox.isSelected();
 			if (!parseTextField(true))
-			{
 				return;
-			}
-			if (useCSV && isValidCsvSize())		//csv chosen
+			boolean useCSV = _csvCheckBox.isSelected();
+			if (useCSV && isValidCsvSize(false))		//csv and size has chosen
 			{
 				_chooseWindow.openWindow(_puzzleSize,true,this);
 				setVisible(false);
 			}
-			else if (!useCSV)
+			else if (!useCSV) 					//csv has not been chosen
 			{
 				_chooseWindow.openWindow(_puzzleSize,false,this);
 				setVisible(false);
 			}
+			else if(useCSV && !isValidCsvSize(false)){
+			    alert("invalid csv size");
+            }
 			return;
 		}
 		if (parseTextField(true))	//csv not loaded and size chosen
@@ -322,8 +353,16 @@ public class StartPuzzleWindow extends JFrame implements ActionListener
 			setVisible(false);
 		}
 	}
-	private boolean isValidCsvSize() {
-		return _filesHandler.legalCsvSize(_puzzleSize);
+
+    /**
+     * return if a board size is valid
+     * @return
+     */
+	private boolean isValidCsvSize(boolean alert) {
+		boolean ans = _filesHandler.legalCsvSize(_puzzleSize);
+		if (alert && !ans)
+			alert("invalid csv size");
+		return ans;
 	}
 
 

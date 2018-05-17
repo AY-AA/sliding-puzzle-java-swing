@@ -13,11 +13,7 @@ import javax.swing.JOptionPane;
  */
 public class ImageLoader 
 {	
-	
-	/**
-	 * loads a picture from user's pc to the game
-	 *
-	 */
+
 	public BufferedImage loadImage()
 	{
 		BufferedImage puzzleImage;

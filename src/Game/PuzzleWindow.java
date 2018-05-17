@@ -10,8 +10,10 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import javax.swing.*;
 
-public class PuzzleWindow extends JFrame implements ActionListener, KeyListener
-{
+/**
+ * this class is responsible for the game itself and cycling it
+ */
+public class PuzzleWindow extends JFrame implements ActionListener, KeyListener {
 
 	// --- TIMER ---
 	private Timer _timer, _popupTimer;
@@ -49,7 +51,7 @@ public class PuzzleWindow extends JFrame implements ActionListener, KeyListener
 	 */
 	public PuzzleWindow (Board board, FilesHandler filesHandler)
 	{
-		super();
+		super("Sliding Puzzle");
 		_filesHandler = filesHandler;
 		_puzzleImage = _filesHandler.getPuzzleImage();
 		_boardDS = board;
@@ -57,31 +59,37 @@ public class PuzzleWindow extends JFrame implements ActionListener, KeyListener
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		initiateWindow();
 		
-		_boardDS.applyBoard(_boardFigures);
 		addKeyListener(this);
 		setFocusable(true);
 		setResizable(false);
 		setVisible(true);		
+		
+		updater();
 	}
 
 	private void initiateWindow()
 	{
 		if (_filesHandler.getIcon() != null)
 			setIconImage(_filesHandler.getIcon());
+		Color buttonColor = new Color(248,244,233);
+		Color bgd = new Color (248,244,233);
 		
 		// initialize header toolbar items
 		_isStopped = false;
 		_isFinished = false;
 		_stopStartButton = new JButton("Stop");
 		_stopStartButton.setIcon(_imagesPack[0]);
+		_stopStartButton.setBackground(buttonColor);
 		_stopStartButton.addActionListener(this);
 
 		_undoButton = new JButton("Undo");
 		_undoButton.setIcon(_imagesPack[2]);
 		_undoButton.addActionListener(this);
+		_undoButton.setBackground(buttonColor);
 
 		_hintButton = new JButton("Hint");
-		_hintButton.setIcon(_imagesPack[7]);
+		_hintButton.setIcon(_imagesPack[8]);
+		_hintButton.setBackground(buttonColor);
 		_hintButton.addActionListener(this);
 		_popupTimer = new Timer(700,this);
 		
@@ -97,13 +105,16 @@ public class PuzzleWindow extends JFrame implements ActionListener, KeyListener
 		_changeImageButton = new JButton("Change");
 		_changeImageButton.setIcon(_imagesPack[3]);
 		_changeImageButton.addActionListener(this);
+		_changeImageButton.setBackground(buttonColor);
 
 		_menuButton = new JButton("Menu");
 		_menuButton.setIcon(_imagesPack[4]);
 		_menuButton.addActionListener(this);
+		_menuButton.setBackground(buttonColor);
 
 		// add items to toolbar
 		_controlsBar = new JPanel();
+		_controlsBar.setBackground(bgd);
 		_controlsBar.setLayout(new FlowLayout(FlowLayout.CENTER));
         _controlsBar.add(_stopStartButton);
         _controlsBar.add(_hintButton);
@@ -128,16 +139,18 @@ public class PuzzleWindow extends JFrame implements ActionListener, KeyListener
 		_infoBar = new JPanel();
 		_infoBar.add(_timerLabel);
 		_infoBar.add(_movesCounterLabel);
+		_infoBar.setBackground(bgd);
 		
 		//initialize board
 		_board = new JPanel();
+		_board.setBackground(new Color(0,199,254));
 		_dimension = _boardDS.getDimension();
 		_figureSize = _puzzleImage.getWidth() / _dimension; //size of each button
 		_figureDimension = new Dimension(_figureSize, _figureSize);
 		_emptyFigure = new JLabel();
 		_emptyFigure.setPreferredSize(_figureDimension);
 		_emptyFigure.setOpaque(true);
-		_emptyFigure.setBackground(Color.BLUE);
+		_emptyFigure.setBackground(new Color(0,199,254));
 		
 		int boardSize = _figureSize * _dimension;
 		_n = _boardDS.getTotalFigures();
@@ -146,7 +159,7 @@ public class PuzzleWindow extends JFrame implements ActionListener, KeyListener
 		_board.setLayout(new GridLayout(_dimension, _dimension, 1, 1));
 		initFigures();
 		_boardDS.applyBoard(_boardFigures);
-		updater();
+
 		
 		// add all components to window
 		add(_controlsBar, BorderLayout.NORTH);
@@ -157,7 +170,7 @@ public class PuzzleWindow extends JFrame implements ActionListener, KeyListener
 	/**
 	 * Initiating the board data structure in order to create from it the board itself
 	 *
-	 * @param puzzle
+	 *
 	 */
 	private void initFigures()
 	{
@@ -182,6 +195,7 @@ public class PuzzleWindow extends JFrame implements ActionListener, KeyListener
 	 */
 	private void updater() 
 	{
+		
 		_board.removeAll();
 		updateBoard();
 		updateMoves();
@@ -189,7 +203,7 @@ public class PuzzleWindow extends JFrame implements ActionListener, KeyListener
 			finishGame();
 	}
 	/**
-	 * Updating the board each move by user
+	 * Updating the board after each move by user
 	 */
 	private void updateBoard() {
 		for (int i = 0; i < _n; i++) {
@@ -261,9 +275,9 @@ public class PuzzleWindow extends JFrame implements ActionListener, KeyListener
 		} catch (ArrayIndexOutOfBoundsException e) {}
 	}
 	/**
-	 * moving figure using the keyboard keys by user
+	 * moving figure using the keyboard keys pressed by user
 	 *
-	 * @param move
+	 * @param  moving,  x
 	 */
 	private void moveByKey(int moving, int x) {
 		moving = moving + x;
@@ -288,7 +302,6 @@ public class PuzzleWindow extends JFrame implements ActionListener, KeyListener
 		_stopStartButton.setText("Play Again");	
 	}
 
-	// --- BUTTONS ---
 	/**
 	 * closes the game and goes back to image choosing window
 	 */
@@ -299,7 +312,7 @@ public class PuzzleWindow extends JFrame implements ActionListener, KeyListener
 		dispose();
 	}
 	/**
-	 * closes the game and goes back to main screen
+	 * closes the game and goes back to main window
 	 */
 	private void backToMenu() 
 	{
@@ -321,7 +334,7 @@ public class PuzzleWindow extends JFrame implements ActionListener, KeyListener
 			alert("cant undo");
 	}
 	/**
-	 * changes the start and stop icons whenever it is clicked and also stop the timer if game is paused
+	 * changes the start and stop icons whenever it is clicked, also stops the timer if the game is paused
 	 */
 	private void PauseStartButton()
 	{
@@ -340,7 +353,7 @@ public class PuzzleWindow extends JFrame implements ActionListener, KeyListener
 		}
 	}
 	/**
-	 * if the game is over and the user wants to play again, this method recreates the board.
+	 * if the game is over and the user wants to play again, this method recreates the puzzle.
 	 */
 	private void playAgain() 
 	{

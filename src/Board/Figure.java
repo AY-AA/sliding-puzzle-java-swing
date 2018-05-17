@@ -2,12 +2,19 @@ package Board;
  
 import javax.swing.*;
 
-public class Figure extends JButton
-{
+/**
+ * a figure is a "cell" in the board holding its properties such as place and an image
+ */
+public class Figure extends JButton {
 
 	private final int _SOL_CELL;
 	private int _currentCell;
-	
+
+    /**
+     * Constructor
+     * @param index
+     * @param figure
+     */
 	public Figure(int index ,ImageIcon figure) 
 	{
 		_currentCell = index;
@@ -23,9 +30,8 @@ public class Figure extends JButton
 	{
 		_currentCell = index;
 	}
-	
+
 	// -------------------------- GETTERS -------------------------- //
-	
 	public int getCurrentIndex()
 	{
 		return _currentCell;

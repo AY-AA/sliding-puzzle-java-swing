@@ -10,7 +10,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
 
-
+/**
+ * Representing the main window of the game
+ */
 public class MainWindow extends JFrame implements ActionListener {
 
 	private JButton _exitButton,_startGameButton;
@@ -19,9 +21,13 @@ public class MainWindow extends JFrame implements ActionListener {
 	private JLabel _welcomeMSG;
 	private FilesHandler _filesHandler;
 	private final Dimension _BUTTON_DIMENSION = new Dimension(130, 70);
-	
-	public MainWindow(FilesHandler filesHandler) {  	
-		super();
+
+    /**
+     * Constructor
+     * @param filesHandler
+     */
+	public MainWindow(FilesHandler filesHandler) {
+		super("Sliding Puzzle");
 		_filesHandler = filesHandler;
 		_iconsPack = _filesHandler.getMainPack();
 		setSize(600	,400);
@@ -30,8 +36,12 @@ public class MainWindow extends JFrame implements ActionListener {
 		setVisible(true);
 		setLocationRelativeTo(null);
 		setResizable(false);
+		requestFocusInWindow();
 	}
-	
+
+    /**
+     * creating the swing preferences of the window
+     */
 	private void initiateWindow()
 	{
 		if (_filesHandler.getIcon() != null)
@@ -40,13 +50,11 @@ public class MainWindow extends JFrame implements ActionListener {
 
 		gbc.insets = new Insets(5, 5, 5,5);
 		_panel = new ImagePanel("Images/Background.jpg");
-
+		Color color = new Color(248,244,233);
 		//-------------------------- Labels
 		_welcomeMSG = new JLabel();
 		_welcomeMSG.setText("Welcome");
 		_welcomeMSG.setFont(new Font ("Arial",Font.BOLD, 60));
-		_welcomeMSG.setOpaque(true);
-		_welcomeMSG.setBackground(new Color(1,196,252,70));
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		_panel.add(_welcomeMSG, gbc);
@@ -56,12 +64,13 @@ public class MainWindow extends JFrame implements ActionListener {
 		_startGameButton.setIcon(_iconsPack[0]);
 		_startGameButton.addActionListener(this);
 		_startGameButton.setPreferredSize(_BUTTON_DIMENSION);
+		_startGameButton.setBackground(color);
 		gbc.gridx = 0;
 		gbc.gridy = 1;
 		_panel.add(_startGameButton, gbc);
 		
 		JLabel x = new JLabel();
-		x.setPreferredSize(new Dimension(230, 70));
+		x.setPreferredSize(new Dimension(220, 70));
 		gbc.gridx = 1;
 		gbc.gridy = 1;
 		_panel.add(x, gbc);
@@ -70,6 +79,7 @@ public class MainWindow extends JFrame implements ActionListener {
 		_exitButton.setIcon(_iconsPack[1]);
 		_exitButton.addActionListener(this);
 		_exitButton.setPreferredSize(_BUTTON_DIMENSION);
+		_exitButton.setBackground(color);
 		gbc.gridx = 0;
 		gbc.gridy = 2;
 		_panel.add(_exitButton, gbc);
@@ -78,15 +88,19 @@ public class MainWindow extends JFrame implements ActionListener {
 	}
 
 	public static void main(String args[]) {
-		new MainWindow(new FilesHandler());
+		FilesHandler fh = new FilesHandler();
+		if (!fh.getStatus())
+			System.out.println("can't launch: missing files");
+		else
+			new MainWindow(fh);
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if (e.getSource() == _exitButton) {
+		if (e.getSource() == _exitButton) { //if exit button has been pressed
 			System.exit(0);
 		} 
-		else if (e.getSource() == _startGameButton) {
+		else if (e.getSource() == _startGameButton) { //if start button has been pressed
 			StartPuzzleWindow sp = new StartPuzzleWindow(_filesHandler);
 			sp.setLocationRelativeTo(this);
 			dispose();
